@@ -1,0 +1,536 @@
+%
+\documentclass[12pt]{article}
+
+% The usual packages
+\usepackage{fullpage}
+\usepackage{breakcites}
+\usepackage{setspace}
+\usepackage{endnotes}
+\usepackage{float}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{rotating}
+\usepackage{dcolumn}
+\usepackage{longtable}
+\usepackage{microtype}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage[usenames,dvipsnames]{color}
+\usepackage{url}
+\usepackage{natbib}
+\usepackage{framed}
+\usepackage{lipsum}
+\usepackage[font=small,labelfont=sc]{caption}
+\restylefloat{table}
+\bibpunct{(}{)}{;}{a}{}{,}
+
+% Set paragraph spacing the way I like
+\parskip=0pt
+\parindent=20pt
+
+% Define mathematical results
+\newtheorem{lemma}{Lemma}
+\newtheorem{proposition}{Proposition}
+\newtheorem{theorem}{Theorem}
+\newtheorem{claim}{Claim}
+\newenvironment{proof}[1][Proof]{\begin{trivlist}
+\item[\hskip \labelsep {\bfseries #1}]}{\end{trivlist}}
+\newenvironment{definition}[1][Definition]{\begin{trivlist}
+\item[\hskip \labelsep {\bfseries #1}]}{\end{trivlist}}
+\newenvironment{example}[1][Example]{\begin{trivlist}
+\item[\hskip \labelsep {\bfseries #1}]}{\end{trivlist}}
+\newenvironment{remark}[1][Remark]{\begin{trivlist}
+\item[\hskip \labelsep {\bfseries #1}]}{\end{trivlist}}
+
+% Set up fonts the way I like
+\usepackage{tgpagella}
+\usepackage[T1]{fontenc}
+\usepackage[bitstream-charter]{mathdesign}
+
+
+
+%% Set up lists the way I like
+%Redefine the first level
+\renewcommand{\theenumi}{\arabic{enumi}.}
+\renewcommand{\labelenumi}{\theenumi}
+%Redefine the second level
+\renewcommand{\theenumii}{\alph{enumii}.}
+\renewcommand{\labelenumii}{\theenumii}
+%Redefine the third level
+\renewcommand{\theenumiii}{\roman{enumiii}.}
+\renewcommand{\labelenumiii}{\theenumiii}
+%Redefine the fourth level
+\renewcommand{\theenumiv}{\Alph{enumiv}.}
+\renewcommand{\labelenumiv}{\theenumiv}
+
+% Create footnote command so that my name
+% has an asterisk rather than a one.
+\long\def\symbolfootnote[#1]#2{\begingroup%
+\def\thefootnote{\fnsymbol{footnote}}\footnote[#1]{#2}\endgroup}
+
+\hypersetup{
+ pdftitle={Strategic Mobilization}, % title
+ pdfauthor={Carlisle Rainey}, % author
+ pdfkeywords={mobilize} {mobilization} {turnout} {proportional} {singe-member district} {PR} {SMD} {SMDP}
+ pdfnewwindow=true, % links in new window
+ colorlinks=true, % false: boxed links; true: colored links
+ linkcolor=BrickRed, % color of internal links
+ citecolor=BrickRed, % color of links to bibliography
+ filecolor=BrickRed, % color of file links
+ urlcolor=BrickRed % color of external links
+}
+
+\begin{document}
+
+\begin{center}
+{\LARGE Strategic Mobilization}\\\vspace{2mm}
+{\large Why Disproportional Districts Increase Partisan Mobilization Efforts}\\
+\vspace{3mm}
+Carlisle Rainey\symbolfootnote[1]{I thank John Ahlquist, William Berry, Scott Clifford, Matt Golder, Sona Golder, Jens Grosser, Bob Jackson, John Barry Ryan, and Dave Siegel for their comments on previous drafts. The analyses presented here were conducted with \texttt{R} 3.0.2 and \texttt{JAGS} 3.3.0. All data and computer code necessary for replication are available upon request and will be posted online upon publication.}\\\singlespace
+\begin{small}
+Assistant Professor\\
+University at Buffalo (SUNY)\\
+Department of Political Science\\
+\href{http://www.carlislerainey.com}{carlislerainey.com}\\
+\href{mailto:rcrainey@buffalo.edu}{rcrainey@buffalo.edu}\\\vspace{4mm}
+For the most recent draft of this manuscript,\\see \href{http://www.carlislerainey.com/research/strategic-mobilization}{crain.co/stratmob}.
+\end{small}
+\end{center}
+
+% Remove page number from first page
+%\thispagestyle{empty}
+
+% Abstract
+{\centerline{\textbf{Abstract}}}
+\begin{quote}\noindent Many scholars suggest that proportional representation increases party mobilization by creating nationally competitive districts that give parties an incentive to mobilize everywhere. This paper provides theoretical and empirical arguments that bring this claim into question. I propose, unlike earlier scholars, that the positive effect of district competitiveness on party mobilization efforts increases as electoral districts become more \textit{dis}proportional, arguing that disproportionality itself encourages mobilization by exaggerating the impact of competitiveness on mobilization. Individual-level survey data from national legislative elections show that competitiveness has a much larger positive effect on parties' mobilization efforts in single-member districts than in proportional districts. Contrary to prior literature, these results suggest proportional electoral rules give parties no strong incentive to mobilize anywhere.\end{quote}
+\thispagestyle{empty}
+
+%\end{document} % uncomment to make a title-page with author info
+
+\newpage
+\doublespace
+% Set first page of text as page 1. I don't care for this
+%   feature because then the page numbers don't correspond
+%   to the pdf pages.
+%\setcounter{page}{1}
+
+\section*{Introduction}
+
+Does proportional representation cause parties to mobilize more voters? Many studies of electoral systems suggest proportional electoral rules do lead to greater mobilization (and thus increased turnout). Prior research suggests that parties (or candidates and activists more broadly) exert greater mobilization efforts under proportional representation (PR) rules than under single-member district plurality (SMDP) rules because PR rules, on average, create more competitive districts \citep{Cox1999}. Many scholars take as given that PR rules always create more competitive districts, although recent work brings this common assumption into question \citep{BlaisLago2009}. More competitive districts, in turn, provide parties a strong incentive to mobilize voters. 
+
+Despite this argument's intuitive appeal, I argue that it misses an important component of electoral rules. While proportional electoral rules might make districts more competitive in the sense that smaller changes in vote shares lead to changes in seat shares, proportional rules also remove much of the incentive to mobilize in competitive districts by reducing the size of the increase in seat share. In a perfectly proportional system, a five percentage point increase in the vote share at the national level gives a party an additional 5\% of the seats in the district. However, in a system that relies on single member districts, a similar 5 percentage point increase in the vote share can cause a party to win the entire district rather than lose the district. Indeed, despite the emphasis that previous work places on increased competition under PR rules, I argue that competitiveness, while it might be higher  under PR rules, should not have a substantively important effect in these systems (though see \citealt{BlaisLago2009}). Thus, if turnout is indeed higher under PR rules, it might be in spite of the mobilization incentives offered by proportional rules, not because of them. 
+
+I make three contributions in this paper. First, I argue that previous models of electoral competition miss one important point--disproportionality itself provides parties a strong incentive to mobilize by exaggerating the effect of competitiveness on mobilization efforts. This points suggests a reevaluation of the claim that proportionality encourages parties to mobilize voters because it creates ``nationally competitive districts.'' Second, unlike most previous work, I recognize that competitiveness can vary in multimember districts and use a recently developed measure of district competitiveness to directly compare the effect of competitiveness on mobilization efforts in PR and SMDP systems. Finally, I use a carefully chosen data set and theory-driven empirical model to test three hypotheses, two of which serve as critical tests. The empirical results confirm the theoretical claim that disproportionality itself gives parties a strong incentive by increasing the impact of competitiveness on mobilization efforts.
+
+\section*{Parties' Incentives to Mobilize}
+
+Consistent with recent trends in the literature examining comparative electoral institutions \citep{Cox1999, Selb2009}, the theory presented below focuses on the elite response to the electoral environment. \cite{DenverHands1974} suggest that ``higher turnout in marginal seats is rarely the product of `rational' appreciation of the situation by \textit{voters}, but results from \textit{parties} creating greater awareness amongst voters or simply cajoling into going to the polls [italics mine].''\footnote{Cited in \cite{Cox1999}.}  This  approach shifts the focus from the utility calculations of voters to the utility calculations of elites \citep{CoxMunger1989, Cox1999}. Thus, races in which the outcome seems certain should receive little attention from either party. The apparent winner and loser have little incentive to expend scarce resources in a non-competitive district. However, in races in which additional mobilization might prove pivotal, candidates and parties have strong incentives to invest resources into mobilization. Scholars originally developed this logic to explain variation across districts \textit{within} countries, primarily the United States, but \cite{Cox1999} generalizes this logic. Extending Cox's argument, the theory below focuses on characteristics of the district that affect parties' incentives to mobilize.
+
+
+As an election approaches, parties, candidates, activists, and possibly donors must  decide whether to devote scarce resources toward mobilizing voters or not. While mobilization is costly, there are potential benefits, particularly that a party might win a larger share of the seats in the district. However, this benefit varies in both its likelihood and  magnitude. I argue that while proportional rules increase the likelihood of a return from mobilization, it also caps the size of any return to a nearly negligible value (e.g. 10\% to 12\% of the seats). On the other hand, SMDP contests create a situation in which a return may or may not be obtainable, but any return has a large magnitude (e.g. 0\% to 100\% of the seats). Further, for competitive races under SMDP rules (e.g. the two front-runners are approximately tied) \textit{both} the likelihood \textit{and} magnitude of a return are high.
+
+\subsection*{Proportional Contests Are More Likely to Reward Mobilization Efforts}
+
+Previous work suggests that proportional rules should create greater incentives for parties to mobilize. By design, PR rules make additional mobilization more likely to change the outcome. Thus it seems that proportional rules offer a greater incentive to mobilize supporters. In fact, a hypothetical ``perfectly proportional'' system would also be ``perfectly competitive'' in the sense that even very small changes in vote shares would lead to changes in seat shares. This seems to suggest that parties would always have an incentive to mobilize in such a system. 
+
+Consider the example presented in Table \ref{tab:example}, in which I imagine a trailing party that is considering a ``final push'' that they expect to increase their vote share by about two percentage points.  The nature of the reward depends on the vote shares prior to mobilization and the electoral rules.
+
+\begin{table}[!ht]
+\begin{scriptsize}
+\begin{tabular}{ccccccc}
+ & Current Vote & Vote Share if & Current Seat & Seat Share if & Presence of Change & Size of Change \\ 
+ & Share & Mobilize & Share & Mobilize& in Seat Share& in Seat Share\\ 
+Non-Competitive SMDP & 10\%     & 12\%  & 0\%   & 0\%   & No    & 0\%\\ 
+(Perfectly) PR       & 10\%     & 12\%  & 10\%  & 12\%  & Yes   & 2\% \\ 
+Competitive SMDP     & 49\%     & 51\%  & 0\%   & 100\% & Yes   & 100\%\\ 
+\end{tabular}\caption{{\normalsize A table illustrating the incentives facing a trailing party leading up to an election. Notice that a proportional contest looks more like a \textit{competitive} SMDP contest when one considers \textit{whether} there is a gain, but much more like an \textit{uncompetitive} SMDP contest when one considers the \textit{size} of the gain.}}\label{tab:example}
+\end{scriptsize}
+\end{table}
+
+The literature focuses on the rewards given in the column ``Presence of  Change in Seat Share'' in Table \ref{tab:example}. In this sense, most proportional contests are, by design, as competitive as the most competitive SMDP contests because small changes in vote shares lead to a change in the seat shares. Thus, it initially seems that parties in competing in proportional contests should mobilize much like their counterparts competing in competitive SMDP contests, since effort is likely to be rewarded in both contexts. \cite{Powell1986} makes the point quite clearly:
+
+\begin{quote}
+Intuitively, it would seem that elections in which the outcome was expected to be close, citizens would feel more reason to participate, and, perhaps more importantly, party organizations and activists would feel more incentive to get their voters to the polls... With proportional representation from the nation as a whole or from large districts, parties have an incentive to mobilize everywhere. With single-member districts, some areas may be written off as hopeless (21).
+\end{quote}
+
+\subsection*{Yet Competitive SMDP Contests Offer a Much Larger Reward}
+
+While I agree with most of the points made by prior work, I find the theory incomplete. In particular, prior work does not consider how the size of the reward for mobilization changes across electoral rules. I agree that parties have little incentive to mobilize in non-competitive SMDP contests because small changes in vote shares lead to no changes in the seat shares. However, the situation is similar in proportional contests, where, by design, small changes in vote shares lead to \textit{small} changes in seat shares. In competitive SMDP contests, on the other hand, small changes in vote shares lead to \textit{large} changes in seat share. When we focus on the size of the gain, rather that whether or not there is a gain, we come to very different conclusions the effects of proportionality.
+
+Consider the rewards from mobilizing in Table \ref{tab:example}. Notice that the reward for implementing a ``final push'' is only a two percentage point increase in seat share. This reward is much closer to the (lack of a) reward found in non-competitive SMDP contests than the large reward found in competitive SMDP contests. Thus, proportional contests ought to look much more like \textit{non-competitive} SMDP contests rather than competitive SMDP contests.
+
+While I recognize that proportional rules are successfully designed so that small changes in vote shares lead to changes in seat shares, I suggest that this feature also undermines the mobilizing effects of competitiveness. By offering disproportional payoffs, competitive SMDP districts offer a much larger incentive to mobilize than similarly competitive PR districts. 
+
+\subsection*{Implications and Critical Tests}
+
+Below I test three observable implications of the logic I discuss above. Two of these implications serve as critical tests--observable implications that differ between my theory and that of previous work. The first implication is both intuitive and widely supported in the literature.
+
+\begin{quote}
+\textsc{Competitiveness Hypothesis}: In both SMDP and PR systems, the mobilization effort by a district's parties increases as the district's competitiveness increases.\footnote{While I expect the effect of competitiveness to be positive under both sets of rules, I expect the effect of competitiveness to be much smaller under proportional rules (see the Interaction Hypothesis). In fact, the effect might be too small to detect in the data set that I employ \citep{Rainey2014}. Therefore, a lack of statistical significance for the estimated effect of competitiveness under proportional rules should not be taken as strong evidence against the hypothesis (see Footnote \ref{fn:noeffect}).}
+\end{quote}
+
+\noindent This serves as an implication of both prior arguments in the literature and my own. It is already established theoretically \citep[e.g.][]{Cox1999b} and empirically \citep[e.g.][]{CoxMunger1989}, so it is of less importance than the other two implications.
+
+The second implication is less intuitive, but counters much of the prior literature and serves as a critical test.
+
+\begin{quote}
+\textsc{Disproportionality Hypothesis}: In competitive districts, the mobilization effort by the district's parties is greater in SMDP systems than in PR systems.
+\end{quote}
+
+\noindent Previous work implicitly assumes that the level of mobilization should be similar across electoral rules for a fixed level of competitiveness because it fails to explicitly consider the magnitude of the gain in seat share that parties might expect from mobilization.\footnote{For example, \cite{Selb2009} writes: \begin{quote} [I]t has been argued that majoritarian systems produce safe seats in districts where the relative strength of the parties is heavily biased. Thus, parties have little incentive to mobilize, and voters have very little incentive to turn out in such districts. In contrast, PR systems are especially designed to ensure that every vote counts, so that local contests should always be competitive. (529)\end{quote}} However, I argue that holding competitiveness fixed at a high level, a disproportional reward for mobilizing additional voters creates an additional incentive for parties to mobilize voters.\footnote{In the spirit of \cite{BerryGolderMilton2012}, I could also offer a hypothesis about the effect of SMDP rules when competitiveness is low. However, proportional rules only create highly competitive contests, so this hypothesis would be neither theoretically nor empirically meaningful.} This implications serves as a critical test--I suggest a positive effect of disproportionality for competitive contests, while the literature suggests little or no effect of disproportionality when competitiveness is held constant.
+
+The third and final implication is related to the second and serves as the key hypothesis in this paper and as a critical test. 
+
+\begin{quote}
+\textsc{Interaction Hypothesis}: The (positive) effect of  competitiveness on the mobilization effort is greater under SMDP rules than under PR rules.
+\end{quote}
+
+\noindent SMDP rules exaggerate the effect of competitiveness by assigning a disproportional payoff to pivotal mobilization efforts. As competitiveness increases, the probability of an additional effort leading to a greater seat share increases in both PR and SMDP systems. However, the size of the gain is much larger under SMDP rules. Thus, SMDP rules exaggerate the effect of competitiveness due to their much maligned disproportional payoffs. This reasoning counters previous research, which implicitly assumes that competitiveness creates similar incentives to mobilize regardless of the system type (i.e. previous work focuses on the presence of a gain, not the magnitude). So while prior work suggests that competitiveness has a similar
+effect in PR and SMDP systems, I suggest that competitiveness should have a much larger effect in SMDP systems
+
+\section*{Data and Measures}
+
+To test these hypotheses, I use Module 2 of the Comparative Studies of Electoral Systems (CSES).\footnote{Modules 1 and 3 of the CSES exclude an important survey question that I use to measure mobilization.} The data set includes individual, district, and national level data from many countries around the world, relying primarily on the work of regional collaborators. Because the Module 2 data include district-level vote shares for only the top eight parties in each country, the CSES data are supplemented with district-level vote totals where necessary to obtain a more complete data set.\footnote{These additional data were compiled from Adam Carr's online election archive. See \texttt{http://psephos.adam-carr.net/}.}
+
+To create the strongest test of the theory and the most reliable estimates, I restrict the analysis to legislative (lower-house) elections in the CSES Module 2 that fit two important criteria: choosing election in which (1) no concurrent national-level elections are present and (2) seats are assigned using first-past-the-rules or the d'Hondt divisor system (i.e. no second-tier corrections). The five elections that fit these criteria occur in Great Britain, Canada, Finland, and Portugal (2).  The Online Appendix provides a table describing the countries that are excluded.
+
+First and most importantly, it is difficult to conceive of and measure competitiveness in more intricate systems, such as systems with single-member districts followed by second-tier correction (often called a ``mixed-member district''). Valid and reliable measurement of district competitiveness is crucial in the empirical analysis, and it remains unclear how to construct a valid measure of competitiveness in more complicated electoral systems. The introduction of measurement error would bias the results toward confirming the hypotheses, since this error would show up primarily in the PR countries and bias the estimates toward zero. Fewer cases make the test more difficult because larger effects are needed to overcome the additional uncertainty and the introduction of measurement error would bias coefficient estimates in PR elections in the direction predicted by the hypotheses. Recent work \citep{GrofmanSelb2009} presents a compelling measure of competitiveness that is comparable across d'Hondt systems, of which SMDP is a subset. 
+
+Second, the theory applies to a single contest for a set of legislative seats. If concurrent elections are present, such as an upper-house or presidential election, it is unclear how this would affect the incentives of parties. It might be that the efforts of presidential candidates overwhelm the efforts of legislative candidates, or the two might balance out. Also, given the measure of mobilization discussed below, it is impossible to distinguish which race is generating the mobilization effort. In order to generate the most accurate estimates, it is important to be able to assign the observed mobilization effort to a particular electoral contest.
+
+\subsection*{Mobilization}
+
+The empirical hypotheses presented above rely on the probability of being contacted by a political party as a measure of mobilization efforts in a district. Other scholars use aggregate measures of mobilization to test whether parties make a greater mobilization effort in more competitive districts, but contact data offer several advantages over this more common variable. For example, \cite{CoxMunger1989} use campaign expenditures as an indicator of mobilization efforts. No such measure exists in the CSES data. As a strong alternative, this analysis relies on an individual-level variable that asks respondents, ``During the last campaign did a candidate or anyone from a political party contact you to persuade you to vote for them?" In some sense, this measure taps the concept of mobilization more directly than an indirect aggregate measure, such as campaign expenditures. Most countries do not make campaign expenditures publicly available, but many surveys inquire about contact with political parties. Because of this, using the individual-level measure allows for testing hypotheses in more general settings. Also, the contact measure only captures one of the many potential forms of mobilization. Parties might run ads on television or in newspapers or conduct rallies or other political events. All these activities constitute mobilization, but the self-reported contact measure misses each.\footnote{Also, notice that the survey question does not ask about contact from activists, who face the same incentives as political parties and candidates.} This criticism, while valid, does not pose as large a problem as it might first appear. Previous research on party mobilization \citep{GerberGreen2000, HuckfeldtSprague1992} shows that while parties engage in other forms of mobilization, more personal forms of contact have larger effects on voter participation. Thus, self-reported contact might not fully capture party mobilization efforts, but it captures an important and effective type of mobilization. Thus, the contact variable, while lacking the breadth of the campaign expenditure measure, more directly taps the concept of mobilization, focuses on an important and effective form of mobilization, and allows testing hypotheses in more diverse settings.
+
+\subsection*{District Competitiveness}
+
+Competitiveness varies across districts. While researchers can easily compare the competitiveness of one district to another in a SMDP system, comparing the competitiveness of districts in PR systems seems more difficult. On top of this, it seems even more difficult to compare district competitiveness across electoral formulas. Prior research dodges this problem by assuming that PR rules create competition over each seat in every district. Nonetheless, scholars can and should measure district competitiveness comparably across districts and across countries.
+
+Scholars typically measure competitiveness in SMDP districts by taking the difference in vote share between the first and second place finishers. This fits well with most conceptions of competitiveness. However, few prior studies actually measure competitiveness at the district level in PR systems. Recent papers by \cite{BlaisLago2009}, \cite{GrofmanSelb2009}, and \cite{Selb2009} argue that competitiveness varies at the district level in PR systems and that research must take this variation into account when considering the effect of competitiveness. Prior studies fail to appropriately capture this variation. For example, \cite{Franklin2004} assumes that all PR districts feature competitiveness similar to a tie under SMDP rules. Most scholars would probably agree that PR rules do not create perfectly competitive districts, yet some continue to assume otherwise in their analyses. Recent work liberates scholars from dubious assumptions about competitiveness under PR rules.\footnote{\cite{BlaisLago2009} measure competitiveness by ``the minimal number of additional votes required, under existing rules, for any party to win one additional seat." While this measure improves upon prior assumptions about competitiveness in PR districts, room for improvement still exists. This measure seems to overstate the competitiveness in PR districts because it only provides information about the closeness of the closest race. This works in SMDP systems because summarizing the closeness of the closest races summarizes the closeness of the district. However, as the district magnitude increases, some parties have closer races than others. The measure recommended by \cite{BlaisLago2009} only captures the competitiveness of the closest contest and overstates the competitiveness of the district. \cite{Selb2009} offers a different solution and considers only the contest for the final seat. I view this measure as an improvement on the measure recommended by \cite{BlaisLago2009}, but it has similar shortcomings. The race for the final seat tells us something about the competitiveness of the district, but it does not adequately summarize the competitiveness for each seat. Even if a district has a close race for the final seat, parties not hotly contesting the final seat might win or lose many votes without winning or losing any seats. On the other hand, if the district does not produce a close race for the final seat, it cannot create competition over the other seats. In other words, the competitiveness for the final seat does not tell us much about the competitiveness of the district as a whole, but it does provide a rough upper bound.}
+
+\cite{GrofmanSelb2009} offer an excellent\footnote{While other measures, such as the measure offered by Blais and Lago (2009), consider only the incentives of the two parties closest to winning and losing, respectively, the final seat, the measure offered by Grofman and Selb (2009) considers the incentives of all the competing in the contest. } but less general measure of district competitiveness applicable specifically to d'Hondt systems. The analysis presented below uses this measure.\footnote{The results were also replicated using the measure developed by \cite{BlaisLago2009}. There are no substantive differences in the results.} Informally, the measure takes account of each party's incentive to mobilize voters, determined by the number of votes that guarantees a party another seat or might cause the party to lose a seat. The measure weights the larger of these two incentives by the party's vote share to find the competitiveness in a district. 
+
+To build their measure, \cite{GrofmanSelb2009} first notice that a party must earn a certain number of votes in order to guarantee itself another seat. Equation \ref{gain_eqn} gives the number of additional votes a party must win to guarantee itself an additional seat.
+\begin{equation}\label{gain_eqn}x^G_i = [(s_i + 1) / (m + 1)] - v_i 
+\end{equation}
+if $s_i < m$ and $x^G_i \leq T^E$, where $s_i$ represents the number of seats won by party $i$, $m$ represents the district magnitude, $v_i$ represents party $i$'s vote share, and $(s_i + 1)/(m + 1)$ represents the threshold of exclusion $T^E$ for the $(s + 1)$th seat. Second, they notice that in order to possibly lose a seat, a party must lose a certain number of votes. Equation \ref{loss_eqn} gives the number of votes a party must lose to possibly lose a seat.
+\begin{equation}\label{loss_eqn}
+x^L_i = (-s_iv_j + s_jv_i + v_i)/(s_i + s_j + 1)
+\end{equation}
+if $s_i >0$, where party $j$ finishes second in the contest for $i$'s final seat.\footnote{In the published version of their paper, Equation \ref{loss_eqn} contains an error. The second $s_i$ in Equation 5 of their paper should be subscripted with $j$. The error is corrected in Equation \ref{loss_eqn} of this paper.} To determine the incentive for party $i$ to mobilize, \cite{GrofmanSelb2009} assume that party $i$ responds to the larger of the two incentives, $x^G_i$ and $x^L_i$. By finding the larger incentive and standardizing it by $T^E$, they find the incentive for party $i$ to mobilize. Equation \ref{compi_eqn} gives the incentive for party $i$ to mobilize in a district.
+\begin{equation}\label{compi_eqn}
+c_i = \text{max}[(T^E - x^G_i), (T^E - x^L_i)]/T^E \text{ ,}
+\end{equation}
+where $T^E$ equals $1/(m +1)$. \cite{GrofmanSelb2009} simply take the average of $c_i$ weighted by $v_i$ to combine each incentive $c_i$ to mobilize. Equation \ref{comp_eqn} gives the total competitiveness in a district, $C$.
+\begin{equation}\label{comp_eqn}
+C = \displaystyle\sum_{i=1}^n v_ic_i
+\end{equation}
+$C$ describes the total competitiveness of the district. This measure improves upon other measures by estimating closeness for each party in each district and weighting by the vote share for that party. This provides a conceptually coherent method to summarize the total competitiveness of the district. Figure \ref{fig:CbyC} presents histograms showing the distribution of competitiveness for each election included in the analysis using Grofman and Selb's \citeyearpar{GrofmanSelb2009} measure.
+
+\subsection*{Disproportionality}
+
+To capture the concept of disproportionality, the analysis uses a dummy variable with SMDP systems (Canada and Great Britain) coded as one and PR systems (Finland and Portugal) coded as zero. Other scholars rely on finer measures of disproportionality, such as the average district magnitude, but that does not seem useful for the analysis. Most of the important variation in disproportionality occurs when district magnitude is close to one \citep{GrofmanSelb2011}. A large change in the proportionality of the district occurs when a district's magnitude changes from one to two. However a much smaller change occurs when a district's magnitude increases from three to four or nine to ten. This suggest a strong non-linear relationship that is more appropriately modeled using dummy variables. Future work might use the variation in district magnitude to gain further empirical leverage, but for the purposes of this analysis, the key variation occurs across systems types, not within \citep{ TaageperaShugart1989, Taagepera2007,GrofmanSelb2011}.\footnote{Portugal offers substantial variation in district magnitude, but unfortunately the smallest district has magnitude three. The most significant substantive change in proportionality occurs in the change from a single-member district to a two-member district. It is quite easy to imagine that a 3-seat district has outcomes as proportional as a district with 10 seats. On the other hand, a single-member district is almost always less proportional than a two-member district and virtually guaranteed to be less proportional than a 3-member district. Models of party competition offer some insight into this as well. Assuming $m-1$ parties are competing in the contest, then up to 50\% of voters might vote for the loser in single-member districts. As the district magnitude increases, the percent of voters who might vote for the loser drops to 33\%, 25\%, and 20\%. Thus, once district magnitude rises to about 3 or 4, the proportionality of the districts changes very little. This theoretical intuition that $m$ is not a good measure of disproportionality once $m > 1$ argument is supported empirically by national \citep{Taagepera2007, TaageperaShugart1989} and district-level evidence \citep{GrofmanSelb2011}. I did, however, estimate the model with district magnitude as a measure of disproportionality. As expected, the results are ambiguous.}
+
+\section*{Empirical Model}
+
+When considering possible models to fit to these data, the nested structure of the data becomes immediately apparent. This nesting creates dependence among the observations, which requires post-estimation corrections or a model more complicated than the standard logit or probit. Parties behave differently across countries. Norms constrain political parties and vary across countries and cultures. Respondents have similar, unobserved characteristics to others in their district or country. Competition might have a homogeneous effect within countries and a heterogeneous effect across countries \citep{Western1998}. Possible solutions include modeling the dependence directly with a multilevel model or using more conventional techniques and correcting standard errors after estimation.
+
+A multilevel modeling approach offers several advantages. First, it is necessary to estimate a separate intercept for each district, but some districts feature only a few respondents (and sometimes only one!). This requires a multilevel model to estimate a group variance parameter to smooth the district intercepts. As the number of individuals in a group becomes large, the amount of smoothing decreases and traditional approaches tend to give similar estimates. Finally, directly modeling variation and heterogeneity that might not directly interest the analyst leads to a cleaner final analysis, easier evaluation of the model, and clearer understandings of the model fit \citep{Gelman2005, Gelman2006}.
+
+Software for estimating multilevel models has improved over the last five years and the applicability of the multilevel approach has increased dramatically with the widespread availability of the Cross-National Studies of Electoral Systems data and other cross-national surveys such as the Eurobarometer and the World Values Survey. To estimate the models below, Bayesian MCMC algorithms generate samples from the posterior distributions of interest \citep{Gill2008, Gelmanetal2004, GelmanHill2007}. Weakly informative priors \cite{Gelman2006a} allow the data to almost completely drive the inferences while still harnessing the power and flexibility of MCMC algorithms \citep{Jackman2000, Jackman2004}.\footnote{As a prior for the fixed effects, I use a normal distribution with mean equal to zero and variance equal to 1000, which practically serves as  a flat prior distribution. For the correlation parameter, I use a uniform distribution from -1 to 1. For the standard deviations of the random effects, I use a half-Cauchy with the scale parameter equal to five. The data swamp the prior for all parameters except the election-level random effects and alternative flat and informative  priors for the standard deviations barely affect the inferences and do not affect the substantive conclusion. See the Online Appendix for more details about the choice of prior for the standard deviation of the random effects}
+
+The individual-level model is a simple varying intercept model that includes individual-level covariates. Given the small number of respondents from some districts, particularly in Britain and Canada, it is important to include individual-level covariates that  predict the whether a person is likely to be contacted. Because several of the variable have several missing values, I multiply imputed the data set \citep{Rubin1987, Kingetal2001}.\footnote{Using listwise deletion yields similar results, and the substantive conclusions are identical.} The probability that individual $i$ in district $j$ in election $k$ is contacted by a political party is modeled as
+\begin{equation}
+\text{Pr}(Contacted_{i} = 1) = \text{logit}^{-1}(\alpha_{jk} + {\bf X}_i\beta) \text{ ,}
+\end{equation}\vspace{3mm}
+where $\alpha_{jk}$ represents an intercept that varies across districts and elections, ${\bf X}_i$ represents a matrix of individual-level covariates, excluding the constant, and $\beta$ represents a vector of non-varying coefficients. In particular,
+\begin{align}
+{\bf X}_i\beta & = \beta_{1}\text{Age}_i + \beta_{2}\text{Male}_i + \beta_{3}\text{Education}_i \nonumber\\
+& + \beta_{4}\text{Union Member}_i + \beta_{5}\text{Household Income}_i\\
+& + \beta_{6}\text{Urban}_i + \beta_{7}\text{Close to a Party}_i \text{ .} \nonumber
+\end{align}
+\noindent I code the variables as follows: age is simply the age of the respondent, male is an indicator variable for male respondents, education is a seven-point ordered-categorical variable, household income is an ordered categorical variable that indicates the respondent's income quintile, urban is an indicator variable for respondents from large urban areas, and close to party is an indicator variable for respondents who reported feeling close to a political party.
+
+Notice that while the empirical model occurs at the level of survey respondents, the primary parameter of interest is the district-level parameter $\alpha_{jk}$, which captures the level of mobilization in the district. Consistent with the theory discussed above, the varying-intercept $\alpha_{jk}$ is modeled as a function of district competitiveness. Importantly, the model allows competitiveness to have an effect in both PR and SMDP systems. Previous research, such as \cite{Franklin2004} and \cite{KarpBanducciBowler2007}, estimate models that assume (1) that competitiveness does not vary across districts in PR systems or (2) that the effect of competitiveness on the probability of being contacted is zero.\footnote{\cite{GrofmanSelb2009}, \cite{Selb2009}, and \cite{BlaisLago2009} argue that competitiveness can vary across districts in PR systems and offer evidence of meaningful variation.} The theoretical argument suggests that competitiveness should have an effect in PR systems so the model allows it to vary. This interaction is crucial to test the theory. As each district becomes more competitive, citizens in the district should be more likely to receive contact from a political party. In particular, 
+\begin{equation}
+\alpha_{jk} \sim N(\gamma_{0k} + \gamma_{1k}Competitiveness_j, \sigma^2_{\alpha}) \text{ for } j = 1, 2,..., J \text{ ,}
+\end{equation}
+where $J$ is the number of districts included in the analysis.
+
+However, the theory suggests that district competitiveness has a larger effect in systems with disproportional rules. Because of this, the coefficient for competitiveness is modeled as a function of disproportionality. When allowing a coefficient to vary, it almost always makes sense to allow the intercept to vary as well and doing so is consistent with other literature in political science on interaction terms \citep{Friedrich1982, BramborClarkGolder2006}. The intercept is modeled as a function of the electoral rules. Modeling the intercept also allows a formal test of the Disproportionality Hypothesis. The varying intercept and slope are allowed to correlate (see \citealt{GelmanHill2007}, esp. ch. 13). In particular, the election-level coefficient and intercept are modeled as
+\begin{equation}
+\begin{pmatrix} \gamma_{0k} \\ \gamma_{1k} \end{pmatrix} 
+\sim 
+{\large} N\begin{pmatrix}  \begin{pmatrix} \mu_{\gamma_{0}} \\ \mu_{\gamma_{1}} \end{pmatrix}, 
+\begin{pmatrix}         \sigma^2_{\gamma_{0}}                                           &                 \rho\sigma_{\gamma_{0}}\sigma_{\gamma_{1}} \\
+                                 \rho\sigma_{\gamma_{0}}\sigma_{\gamma_{1}}         &                \sigma^2_{\gamma_{1}}
+\end{pmatrix}\end{pmatrix} \text{ , for }k = 1, 2, ..., K \text{ ,}
+\end{equation}
+where 
+\begin{equation}\label{eqn:disint_modeled}
+\mu_{\gamma_{0}} = \delta_{00} + \delta_{01}Disproportional.Rules_k \text{  ,}
+\end{equation}
+\begin{equation}\label{eqn:comp_modeled}
+\mu_{\gamma_{1}} = \delta_{10} + \delta_{11}Disproportional.Rules_k \text{ ,}
+\end{equation}          
+and $K$ is the number of elections included in the analysis.\footnote{Importantly, this structure allows estimating a separate intercept and slope (for competitiveness) in each election. There are many reasons to expect small differences across countries, such as variation in the level of intra-party competition. The model allows these differences to emerge.}
+                                                                                
+\section*{Results}
+
+To assess the convergence of the Gibbs sampling algorithm, I calculated $\hat{R}$ statistics \citep{GelmanRubin1992} for each parameter of the model. For a single imputed data sets, I ran three MCMC chains until the $\hat{R}$ statistics for each parameter dropped below 1.01. The model appears to converge after about 2,000 draws. Using this sense of how many iterations  the Markov chain takes to converge, I use a conservative 5,000 iteration burn-in period, followed by 10,000 simulations with each of five multiply imputed data sets. I combine the simulations from these five chains to obtain the posterior simulations, which contain sufficient information to test the three hypotheses suggested by the theory.\footnote{\label{fn:robust}In addition to the model presented above, I estimated and evaluated several other models using likelihood ratio tests, the deviance information criterion, and cross-validation. The results presented here are robust to different modeling choices, including hierarchical and non-hierarchical structures, inclusion and exclusion of individual-level covariates, and multiple imputation and listwise deletion. One potential confound of concern is the party system and specifically the effective number of parties. The number of parties is known to covary with electoral rules and can reasonably be thought to influence the rate of contacting. However, including this control does not affect the results. See the Online Appendix for the details of several robustness checks.}Rather than present and discuss the coefficients directly, I discuss changes in probability of being contacted as implied by the model \citep{KingTomzWhittenburg2000, BerryDeMerittEsarey2010}. To compute predicted probabilities, I set all individual-level covariates at their medians.
+
+\subsection*{The Effect of Competitiveness}
+
+According to the Competitiveness Hypothesis, the theory suggests that the probability of receiving contact from a political party increases as district competitiveness increases, regardless of the disproportionality of the electoral rules. The first panel of Figure \ref{FullPrProb} shows little change in the predicted probability of contact as district competitiveness increases in PR systems. Confirming what Figure \ref{FullPrProb} suggests, the first panel of Figure \ref{mfx} shows that the marginal effect of competitiveness is nearly zero in PR systems at all levels of competitiveness. The data offer little support for the Competitiveness Hypothesis in PR systems, because the marginal effect of competitiveness is always close to zero and the credible intervals substantially overlap zero.\footnote{\label{fn:noeffect}However, it is important to note that the results do not suggest that competitiveness has no effect in PR systems. Indeed, the data are consistent with substantively large effects \citep{Rainey2014}. However, a true relationship that is inconsistent with the theory (i.e. competitiveness has a negative effect on mobilization efforts) cannot be confidently ruled out. The data are consistent with relationships suggested by the theory and other relationships as well. These ambiguous results are not completely unexpected, though, due to the likely small effect of competitiveness in PR systems (the theory does suggest a small effect) and the small sample size. The important empirical result, that competitiveness has a larger effect in SMDP systems than PR systems, is supported and discussed below.}
+
+The Competitiveness Hypothesis also suggests that district competitiveness should have a positive effect in SMDP systems. The second panel of Figure \ref{FullPrProb} shows that the predicted probability of contact increases dramatically across the range of district competitiveness in SMDP systems, suggesting that the hypothesis is correct. The second panel of Figure \ref{mfx} confirms this, showing clearly that the marginal effect of competitiveness on the probability of receiving contact is increasing for all levels of competitiveness. Therefore, the empirical model provides strong support for the Competitiveness Hypothesis in systems with disproportional rules. Competitiveness exerts a large positive effect on party mobilization under disproportional rules.
+
+\begin{figure}[h]
+\centering
+\includegraphics[scale = .7]{figs/prob.pdf}
+\caption{This figure contrasts the effects of district competitiveness on the predicted probability of receiving contact from a political party under different electoral formulas. The histograms in the background show the distribution of competitiveness under PR and SMDP electoral rules, respectively. The figure shows that the probability of receiving contact shrinks near zero under both formulas in non-competitive districts. However, the probability of receiving contact increases drastically under SMDP rules as competitiveness intensifies, but does not increase as much under PR rules. Compare these figures to the theoretical expectations given in the comparative statics. The histograms in the background show the distribution of district competitiveness in each type of system.}\label{FullPrProb}
+\end{figure}
+
+\begin{figure}[h]
+\centering
+\includegraphics[scale = .7]{figs/me_competitiveness.pdf}
+\caption{This figure shows the marginal effects of competitiveness in PR and SMDP systems. the Competitiveness Hypothesis suggests that competitiveness should have a positive effect on the probability of receiving contact in both PR and SMDP systems for all levels of competitiveness. This figure shows little support for the Competitiveness Hypothesis in PR systems, but strong support in SMDP systems. The histograms in the background show the distribution of district competitiveness in each type of system.}\label{mfx}
+\end{figure}
+\newpage
+
+\subsection*{The Effect of Disproportionality}
+
+The Disproportionality Hypothesis suggests that the effect of disproportionality should be positive for all values of competitiveness, regardless of the electoral rules. The empirical model presented above supports this hypothesis. Again, because the effect of competitiveness and the district-level intercept are modeled as a function of disproportional rules, disproportionality has an effect that varies across values of competitiveness. Comparing the first and second panels of Figure \ref{FullPrProb} suggests that this hypothesis only holds for high values of competitiveness, since the predicted probabilities are similar for low values of competitiveness. Figure \ref{FD} provides the difference in the predicted probability of being contacted by a political party in SMDP and PR systems as competitiveness varies. This figure shows that disproportional rules have a positive, statistically significant effect on the difference in the predicted probabilities of being contacted only for the higher values of competitiveness. This offers only partial support for the Disproportionality Hypothesis, but provide strong evidence disproportionality has a large, positive effect on mobilization efforts in more competitive districts.
+
+\begin{figure}[h]
+\centering
+\includegraphics[scale = .7]{figs/fd_smdp.pdf}
+\caption{This figures shows how the predicted probability of an individual receiving contact from a political party changes when that individual ``moves'' from a system that features PR rules to a system with SMDP rules. The solid line indicates the predicted difference and the dotted lines show the 90\% Bayesian credible interval around that predication. The figure shows that for the low values of competitiveness observed in the data, no difference exists between the systems. However, as competitiveness intensifies, SMDP rules increase the probability of receiving contact from a political party relative to PR rules. The histogram in the background shows the distribution of competitiveness across system types.}\label{FD}
+\end{figure}
+
+Overall, the model combined with the additional analysis offers some support for the Disproportionality Hypothesis. More citizens are contacted by political parties in disproportional systems. However, the model suggests that the evidence for this difference is strong only in more competitive districts.
+
+\subsection*{The Interaction Between Competitiveness and Disproportionality}
+
+So far, the analysis suggests that district competitiveness has a statistically significant effect on the probability of contact in SMDP systems but not in PR systems; however, this does not automatically suggest that the two effects are statistically different \citep{GelmanStern2006}. The Interaction Hypothesis predicts significant differences between the marginal effect of district competitiveness under different electoral rules. While Figure \ref{mfx} suggests that the marginal effect of competitiveness in greater in SMDP systems, the large credible intervals make accepting the Interaction Hypothesis quite difficult. Figure \ref{mfxdif} offers an explicit test of the prediction by plotting the difference between the marginal effect of competitiveness in SMDP and PR systems as competitiveness varies. This figure shows that the marginal effect of competitiveness is greater in SMDP elections for all levels of competitiveness. This test offers strong support for the Interaction Hypothesis. The marginal effect of district competitiveness in SMDP systems is significantly larger than in PR systems. 
+
+\begin{figure}[h]
+\centering
+\includegraphics[scale = .7]{figs/interaction.pdf}
+\caption{This figures shows the difference between the marginal effects of competitiveness in SMDP and PR systems as competitiveness varies. Consistent with the Interaction Hypothesis, this figure shows that the marginal effect of competitiveness is always greater in SMDP systems. The histogram in the background shows the distribution of competitiveness across system types.}\label{mfxdif}
+\end{figure}
+
+\subsection*{Considering the Individual Countries}
+
+The analysis above focuses on the averages across countries. The predicted probabilities and marginal effects are for a hypothetical, ``average'' election. However, the observed elections also provide support for the conclusions from the larger model. Figure \ref{fig:CbyC} shows the predicted probability of receiving contact from a political party as competitiveness varies in each country included in the analysis. The results are consistent and robust across countries. As suggested by my theory, the increase in the predicted probability as competitiveness increases is larger in the SMDP systems included in the analysis (Canada and Great Britain) and smaller in the PR countries (Finland and Portugal). The difference is stark and shows the ability of the model to explain party strategies under different electoral rules.
+
+\begin{figure}[h]
+\centering
+\includegraphics[scale = .7]{figs/CbyC.pdf}
+\caption{This figures shows how the predicted probability of an individual receiving contact from a political party changes as competitiveness increases across the countries included in the analysis. The solid line indicates the predicted difference and the dotted lines show the 90\% Bayesian credible interval around that predication. The figure shows that the results in Figures \ref{FullPrProb} and \ref{FD} are robust. The two SMDP elections in the data (Canada and Great Britain) show large increases in the probability of receiving contact as competitiveness increases, while the three PR elections (Finland and Portugal) show no increase. This offers strong support for the Interaction Hypothesis. The histograms in the background show the distribution of competitiveness in each country.}\label{fig:CbyC}
+\end{figure}
+
+In summary, the data are supportive of the key intuitions of the theory, supporting the Interaction Hypothesis and partially supporting the secondary Competitiveness Hypothesis and Disproportionality Hypothesis. First, district competitiveness has a significant effect on the likelihood of being contacted, but only in systems with disproportional rules. Competitiveness has no appreciable effect in systems with proportional rules. Second, disproportional rules have a positive effect on the likelihood of being contacted, but only for highly competitive districts. Finally and most importantly, the effect of competitiveness becomes significantly stronger under disproportional rules relative to proportional rules.
+
+The findings here suggest that previous research misses an important effect of disproportionality. While previous work suggests that disproportionality \textit{discourages} mobilization, I present a theory suggesting that disproportionality  \textit{encourages} mobilization by exaggerating the effect of competitiveness. Empirically, I find that disproportionality actually boosts the likelihood of receiving contact from a political party in competitive districts and that competitiveness always has a larger positive effect on mobilization in SMDP systems. While this result says nothing about the effectiveness of the contact (i.e. whether the citizen responds by turning out to vote), it does show that parties in competitive SMDP districts make a much stronger effort than parties in similar PR districts, contrary to the claims of most previous research. Further, parties' mobilization efforts in the \textit{most competitive} PR districts appear similar to those in the \textit{least competitive} SMDP districts. 
+
+\section*{Discussion}
+
+This section offers a brief discussion of the relationship between the theoretical and empirical findings presented above and other scholarship. I explain where my findings are compatible with previous research and how it differs. First, previous literature claims that PR rules increase district competitiveness on average \citep{Powell1986, Jackman1987, BlaisDobrzynska1998, BlaisAarts2006, Blais2006}. The results presented here are entirely compatible with this claim. The data shown in Figure \ref{fig:CbyC} show that within the data used for the analysis, SMDP systems feature more ``non-competitive'' districts than PR systems. However, the analysis also suggests that the emphasis placed on the observed difference in competitiveness across systems is unwarranted. Both the theory and empirical model suggest that competitiveness has a much smaller impact on mobilization efforts than previously thought in PR systems. Indeed, my data suggest that PR rules nearly eliminate any mobilizing incentives of competitiveness. 
+
+Second, more recent literature motivated by formal models \citep{Cox1999, Selb2009} argues that both competitiveness and turnout (and hence mobilization) are more variable in SMDP systems. This again is compatible with and supported by the theoretical and empirical results presented here. Indeed, the predicted probabilities I present in Figure \ref{fig:CbyC} show that the predicted probability of being contacted in SMDP systems varies substantially across competitiveness. Much less variation exists in PR systems. However, this is not due to PR rules creating an incentive to mobilize everywhere, as much of the literature suggests. Rather, PR rules create no strong incentive for parties to mobilize anywhere. Indeed, mobilization efforts in the least competitive SMDP districts are comparable to those in the most competitive PR districts.
+
+The claims of this paper are vulnerable to several alternative explanations that future research should investigate more carefully. First, one might suggest that competitiveness remains constant across elections in SMDP systems but changes unpredictably in PR systems. Because competitiveness is not predictable in PR systems, parties cannot act strategically. While this might explain the lack of an increase in the predicted probability of contact as competitiveness increases, it does not explain why contact rates are so low in PR systems. Future work should also investigate whether parties in PR and SMDP systems use different modes of campaigning to attract voters. It could be that parties use advertising strategies in PR systems and a canvassing approach in SMDP systems. \cite{KarpBowlerBanducci2003} offer some tentative evidence that this might occur based on the 1999 European Parliamentary Elections and \cite{ZittelGschwend2008} argue that campaign strategies might vary with electoral rules based on the 2005 German elections.
+
+This work also lays the groundwork for several important extensions. First, similar analyses should be conducted in and across more countries and under a wider variety of electoral rules. Doing so will require extension of the measure of district competitiveness introduced by \cite{GrofmanSelb2009} to other electoral formulas. Alternatively, future work might sacrifice validity for a less precise but more widely applicable measure. Second, future theoretical work might focus on parties' incentives under simultaneous national elections, such as elections to an upper and lower house, presidential and legislative elections, and so on. Future work might also focus on mixed electoral systems, building on the foundation laid in this paper, as well as previous work by \cite{FerraraHerron2005} and \cite{Ferrara2006} on strategic entry.
+
+\section*{Conclusion}
+
+The resolution to the debate over whether PR rules cause more mobilization efforts and higher turnout has important implications for representative democracy. As noted by many previous studies \citep{WolfingerRosenstone1980, RosenstoneHansen1993, BradyVerbaSchlozman1995}, wealthier, more educated, and higher SES citizens turn out at a greater rate than other citizens. Because elected officials have an incentive to respond to voters rather than the citizens as a whole \citep{Downs1957}, the resulting policies reflect the interests of only some citizens. While scholars disagree over the severity of this problem \citep{BerelsonLazarsfeldMcPhee1954, Lijphart1997, Teixeira1992}, most agree that low turnout poses an obstacle to an ideal democracy. Indeed, Arend Lijphart (1997) calls unequal participation ``democracy's unresolved dilemma,'' and suggests PR electoral institutions as a resolution.
+
+Further, \cite{Sniderman2000} points out that parties play an important role in structuring the political world, allowing relatively uninformed voters to make sense of it. Political scientists know a great deal about how many parties are likely to emerge in a political system (e.g. \citealt{Cox1997, ChhibberKollman1998, ClarkGolder2006}) and where these parties are likely to position in the ideological space (e.g. \citealt{Cox1990, KollmanMillerPage1992, AdamsMerrillGrofman2005}), but political scientists know relatively less about what rules give parties an incentive to mobilize voters, making political participation less costly and providing voters with the information necessary to make good choices \citep{Downs1957}.
+
+
+This paper makes an important contribution to this debate, suggesting that previous work misses the important impact of disproportionality itself on incentives to mobilize. I argue that disproportionality itself actually encourages mobilization, since increases in effort can lead to even larger increases in seat share. I further argue that while competitiveness might be greater in PR systems, the impact of this additional competition is minimal. Thus, PR systems do not create any strong incentives to mobilize.
+
+Political scientists have argued that one benefit of PR rules is increased voter participation (e.g. \citealt{Lijphart1997}) and other scholars have argued that this occurs because of ``nationally competitive districts'' (e.g. \citealt{Powell1986}). However, \cite{BlaisAarts2006} argue that political scientists should not be confident in these claims until a better explanation of the phenomenon is developed. The results presented in this paper affirm Blais and Aarts' skepticism by offering theoretical and empirical evidence that SMDP rules cause parties to mobilize more, not fewer, voters, especially as district competitiveness increases. Indeed, it seems that proportional rules offer parties no strong incentive to mobilize anywhere.
+
+\singlespace 
+\normalsize
+\singlespace
+\bibliographystyle{apsr_fs}
+\bibliography{bibliography}
+
+
+\begin{appendix}
+
+\newpage
+
+
+\begin{center}
+{\LARGE Online Appendix}\\\vspace{2mm}
+{for}\\\vspace{2mm}
+{\Large Strategic Mobilization}\\\vspace{2mm}
+{\large Why Disproportional Districts Increase Partisan Mobilization Efforts}\\
+\end{center}
+
+%\small
+
+\tableofcontents
+ 
+
+\section{Robustness of Empirical Results}
+
+In the first section of this appendix, I expand on the comments I make about the robustness of the empirical results in Footnote \ref{fn:robust} of the main text. I first show that the conclusions do not depend on whether I control for the number of political parties. Next, I show that the results are robust to complete pooling (single logit on the entire data set). Finally, I show that the results are robust to no pooling across countries (separate logits in each country). For computational ease, I (1) use listwise deletion for all the robustness checks, (2) assume that the random effects in the hierarchical models are independent, and (3) place Gamma(2, 0.01) priors on the standard deviation parameters of the hierarchical models (see \citealt{Chungetal2013}). Inferences do not depend on multiple imputation. Relaxing independence does not change any conclusions (and the estimated correlation in the main text is near zero). Placing priors on the standard deviation parameter gently pushes these parameters away from zero in a couple of instances. All explanatory variables in this section are scaled to have a minimum of zero and a maximum of one, with the exception of competitiveness, which has a theoretical range from zero to one but actually varies from 0.24 to 0.93. This scaling dramatically speeds the convergence of the MLE estimation.
+
+\clearpage
+\subsection{Controlling for Number of Political Parties Does Not Affect the Results}
+
+One potential confound that I do not include in the main model is the number of political parties. Prior work shows that proportional electoral rules lead to more political parties, so it might be important to take this factor into account. Table \ref{tab:enep_partial} presents a series of hierarchical models that show the results do not change when I  include the effective number of political parties (at the district level) in the model or by including its interaction with electoral rules. The results are remarkably consistent across the different specifications.
+
+Notice first that, as I expect, district competitiveness has a positive effect in SMDP systems (shown by the large, positive coefficient for competitiveness) and PR rules eliminate most of this positive effect (shown the large, negative coefficient for the product of competitiveness and PR rules). These findings hold regardless of the model specification. Next, notice that whether I include or exclude individual-level covariates in the hierarchical  models, the the model specification that I rely on in the main text (excluding the number of parties) minimizes the BIC, a criterion commonly used to choose model specifications. However, Table \ref{tab:F_partial} shows that the effect of the number of parties marginally statistically significant when individual-level controls are excluded from the model. But because the BIC points toward the model excluding the number of political parties, I present that model in the main text. However, the conclusions do not depend on this choice.
+
+\input{tabs/enep_partial.tex}
+
+ 
+ \begin{table}[h!]
+ \begin{center}
+ \begin{tabular}{c c c}
+ Comparison & $F$-test & Direction \\
+ Model 1 to Model 2 & $p = 0.09$ & + \\
+ Model 1 to Model 3 & $p = 0.12$ & + \\
+ Model 4 to Model 5 & $p = 1.00$ & 0 \\
+ Model 4 to Model 6 & $p = 0.68$ & +/-- \\
+ \end{tabular} \caption{This table compares models that include and exclude ENEP. The Comparison column reports which two models from Table \ref{tab:enep_partial} are being compared. The $F$-test column reports the $p$-value that that larger model (including ENEP) fits the data statistically significantly better than than the smaller model (excluding ENEP). The Direction column reports the direction of the estimated effect of ENEP.}\label{tab:F_partial}
+ \end{center}
+ \end{table}
+ 
+\clearpage
+\subsection{Estimating a Model with Complete Pooling Does Not Affect Results}
+
+Table \ref{tab:enep_complete} presents estimates using a non-hierarchical logit model that completely pools the data across countries and districts. These results show that the conclusions in the main text and the conclusions about the limited impact of the number of parties on these results are robust to a complete pooling estimation strategy. Notice that across all model specifications, competitiveness has a large, positive effect in SMDP systems (shown by the coefficient for competitiveness) while PR rules consistently undermine this effect (shown by the large, negative coefficient for the product of competitiveness and PR rules).
+
+By design, the empirical model I present in the main text partially pools information across districts. Because districts in Canada and Great Britain have fewer respondents and thus less information per district, there is more partial pooling in these districts. One might wonder whether this has an unintended effect on the results. However, the results from Table \ref{tab:enep_complete} using complete pooling closely mirror those from Table \ref{tab:enep_partial} using partial pooling. The substantive conclusions do not change.
+
+However, Table \ref{tab:F_complete} shows that all specifications in Table \ref{tab:enep_complete} that include the number of political parties  fit the data statistically significantly better than models excluding the number of political parties. However, notice that signs of the estimated effects depend on whether I include individual-level covariates. Also again notice that the model specification that I rely on in the main text minimizes the BIC.
+
+\input{tabs/enep_complete.tex}
+
+
+ \begin{table}[h!]
+ \begin{center}
+ \begin{tabular}{c c c}
+ Comparison & $F$-test & Direction \\
+ Model 7 to Model 8 & $p = 0.01$ & + \\
+ Model 7 to Model 9 & $p = 0.05$ & + \\
+ Model 10 to Model 11 & $p = 0.01$ & -- \\
+ Model 10 to Model 12 & $p = 0.04$ & -- \\
+ \end{tabular} \caption{This table compares models that include and exclude ENEP. The Comparison column reports which two models from Table \ref{tab:enep_partial} are being compared. The $F$-test column reports the $p$-value that that larger model (including ENEP) fits the data statistically significantly better than than the smaller model (excluding ENEP). The Direction column reports the direction of the estimated effect of ENEP.}\label{tab:F_complete}
+ \end{center}
+ \end{table}
+
+\clearpage
+\subsection{Estimating a Model with No Pooling Across Countries Does Not Affect the Results}
+ 
+The model I present in the main text assumes complete pooling across districts and elections. In this section, I also show that the results are robust to a no pooling assumption by estimating separate logistic regressions for each election in the data. This approach uses complete pooling across districts and no pooling across elections. The results are consistent with the main model (i.e. notice that competitiveness has a much larger effect in Canada and Great Britain). Table \ref{tab:CbyC_componly} presents results without individual-level controls, while Table \ref{tab:CbyC_full} includes them.
+
+
+\input{tabs/CbyC_componly.tex}
+
+\input{tabs/CbyC_full.tex}
+
+I also replicate Figure \ref{fig:CbyC} from the main text using separate models in each country (i.e. the estimates presented in Table \ref{tab:CbyC_full}). Figure \ref{fig:CbyC_sep} shows these results.
+
+\begin{figure}[h!]
+\centering
+\includegraphics[scale = .7]{figs/CbyC_sep.pdf}
+\caption{This figure replicates Figure \ref{fig:CbyC} in the main text using separate logistic regression models in each election. That is, it exhibits no pooling across elections and complete pooling across districts. The results are very similar to Figure \ref{fig:CbyC} in the main text and the substantive conclusions are the same.}\label{fig:CbyC_sep}
+\end{figure}
+
+\clearpage
+
+\section{Variance Priors}
+
+The data I use to estimate the model parameters contain sufficient information to estimate all parameters reasonably well with the exception of the covariance matrix for the election-level effects. In this situation, the choice of prior can impact the results and one must choose a reasonable prior. A default, ``uninformative'' prior uniformly distributed from 0 to 100 yields results substantively similar to the results I discuss in the main text, but overestimates the variance parameters (\citealt{Gelman2006a}).
+
+To alleviate concerns of overestimating variance parameters, I construct a weakly informative prior distribution for the diagonal entries of the covariance matrix for the election-level effects. The goal is to place a weakly-informative prior on the variance parameters (election-level variances, in this case) that contains much less prior information than is actually available, allowing the likelihood to drive the inferences. To do this, I use a half-Cauchy(5) distribution to model the standard deviations. Figure \ref{priors} shows that the half-Cauchy(5) is nearly uniform for reasonable values of the standard deviation, which for my purposes is roughly the interval [0,3]. Given the scale of the variables, it would be very strange if the true coefficients (conditional on electoral rules) across elections had a standard deviation of greater than three. One would probably expect a standard deviation of less than one. If the standard deviation were three, and the mean, for example, 2, then roughly half of the elections would have logit coefficients larger than four or less than zero. Given the scaling of the variables of interest, this is not a realistic scenario.
+
+Another important property of the half-Cauchy(5) prior is that it goes to zero very slowly compared to the half-normal prior. So while it is roughly uniform from zero to three, it is quite flat out to ten. This property rules out very large standard deviations, such as 30, while allowing the likelihood to drive the estimates. Compare the half-Cauchy(5) prior to the uniform(0,100) and the half-normal(2). Notice that the uniform prior places an unrealistic, flat prior on the standard deviation, suggesting that large values near 50 are just as likely as small values near one. \cite{Gelman2006a} notes that the uniform(0,100) prior is problematic because it leads to an overestimation of the variance parameters, especially when the number of groups is small. The half-normal(2) prior, on the other hand, acts as a highly informative prior, ruling out large standard deviations and placing much higher prior weight on parameter values less than three. Although I use the half-Cauchy(5) prior in the main analysis, the results are substantively similar for both the uniform and the half-normal prior. 
+
+\begin{figure}[h!]
+\centering
+\includegraphics[scale = .7]{figs/variance_priors.pdf}
+\caption{This figure shows that the half-Cauchy(5) prior is a reasonable, weakly informative prior. It is roughly flat for reasonable standard deviations and somewhat flat for larger, but unrealistic values. \cite{Gelman2006a} points out that this prior structure will yield less upwardly biased estimates of standard deviation parameters. Compare the half-Cauchy(5) to the uniform(0,100), which places substantial prior weight on truly unrealistic standard deviations above ten, and the half-normal(2) prior, which places a much higher prior probability on parameter values less than three.}\label{priors}
+\end{figure}
+
+To illustrate that the weakly informative half-Cauchy prior is not driving the inferences, Figure \ref{postvar} shows the MCMC samples of the standard deviation parameter in the models using half-Cauchy(5), uniform(0,100), and half-normal(2) priors. In each case, plotting the prior is not useful because it appears as a barely visible flat line across the bottom of the histogram, suggesting the the likelihood is overwhelming the prior, as intended. However, notice that the posteriors based on the weakly informative half-Cauchy priors and the informative half-normal priors are more peaked and focused in a realistic region of the parameter space than the posteriors based on the uniform priors.
+
+\begin{figure}[h!]
+\centering
+\includegraphics[scale = .7]{figs/variance_posteriors.pdf}
+\caption{This figure shows that the half-Cauchy(5) prior does not overwhelm the likelihood. If the prior density were plotted, it would be a barely visible, flat line across the bottom of the plot. Further, all the posteriors are concentrated well below one, while both the half-Cauchy and uniform priors place a substantial prior probability above one.}\label{postvar}
+\end{figure}
+
+\clearpage
+\section{Case Selection}
+
+Table \ref{exclusion} lists each country in Module 2 of the CSES and explains if and why I exclude it from the sample.
+
+\begin{table}
+{\scriptsize \begin{tabular}{ll}
+\textbf{Country} & \textbf{Reason Excluded}\\
+Albania & second-tier adjustments\\
+Australia & concurrent upper house election \\
+Belgium & concurrent upper house election\\
+Brazil & concurrent presidential election, concurrent upper house election\\
+Bulgaria & overlapping single and multimember districts \\
+&(though not strictly a second-tier correction)\\
+Canada & Included\\
+Chile & concurrent presidential election, concurrent upper house election\\
+Czech Republic & second-tier adjustment\\
+Denmark & second-tier adjustment\\
+Finland & Included\\
+France & concurrent presidential election\\
+Germany & second-tier adjustment\\
+Great Britain & Included\\
+Hong Kong & overlapping geographic and functional constituencies\\
+Hungary & second-tier adjustment\\
+Iceland & second-tier adjustment\\
+Ireland & Droop Quota\\
+Israel & single national district\\
+Italy & concurrent upper house election\\
+Japan & concurrent upper house election\\
+Korea & second-tier correction\\
+Kyrgyzstan & concurrent presidential election\\
+Mexico & second-tier adjustment\\
+Netherlands & single national district\\
+New Zealand&second-tier adjustment\\
+Norway&second-tier adjustment\\
+Peru&concurrent presidential election\\
+Philippines&concurrent presidential election\\
+Poland&concurrent upper house election\\
+Portugal&Included\\
+Romania&concurrent presidential election, concurrent upper house election, \\
+&  second-tier adjustment\\
+Russia&concurrent presidential election\\
+Slovenia&data unavailability\\
+Spain&concurrent upper house elections\\
+Sweden&second-tier adjustment\\
+Switzerland&concurrent upper house elections\\
+Taiwan&concurrent presidential election, second-tier adjustment\\
+United States&concurrent presidential election, concurrent upper house election
+\end{tabular}\caption{A table listing the countries in Module 2 of the CSES and explaining why each country was excluded.}\label{exclusion}}
+\end{table}
+
+\section{Does the Number of Seats Matter?}
+
+One might wonder about the role of district magnitude in the relationship between electoral rules and mobilization. Indeed, one may recognize and be skeptical about the relationships I outline above because, by definition, a pivotal effort leads to an additional seat under both SMDP and PR rules. This critique asserts that it is irrelevant whether the legislative seat in question is the only one in the contest or one of many. It argues that the payoff for a pivotal effort is not larger under SMDP rules, it is the same--one seat.
+
+However, I think this critique does not withstand scrutiny. To reason through the consequences of varying the number of seats, I fix mobilization and think through the effort required to produce this level of mobilization. 
+First, suppose a small country of one million individuals who might choose their representatives through 100 SMDP districts or a single, national, PR district. Notice that both I and prior literature conceive of competitiveness in terms of the size of change in vote shares necessary to change the seat shares \textit{in percentage points}. Suppose that in one of the 100 SMDP districts, a party needs to gain two additional percentage points to win an additional seat. Compare this party to a similar party in the single, national, proportional district that also needs two percentage points to gain an additional seat. Notice that both parties trade two percentages points of additional mobilization for a single seat. However, two percentage points is 20,000 votes in the single national district, but only 200 votes in the smaller SMDP district. Thus, the single seat is about 100 times more costly in the proportional district. For this reason, I am quite uncomfortable treating a single seat as having the same value under PR and SMDP rules. Instead, the conceptualization of competitiveness and mobilization requires treating one seat of ten as having one-tenth of the value of one seat in a SMDP contest for a single seat. 
+
+
+\end{appendix}
+\end{document}
+

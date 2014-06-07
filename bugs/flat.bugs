@@ -1,0 +1,57 @@
+## flat.bugs
+model {
+  # INDIVIDUAL LEVEL MODEL
+  for (i in 1:n)  {
+    contacted[i] ~ dbin(p.bound[i], 1)
+    p.bound[i] <- max(0, min(1, p[i]))
+    logit(p[i]) <- y.star[i]
+    y.star[i] <- alpha[district[i]] + beta.age*age[i] + beta.male*male[i] +
+                 beta.edu*education[i] + beta.union*union[i] + 
+                 beta.income*income[i] + beta.urban*urban[i] + 
+                 beta.close*close[i]  # eqn 5
+  }
+
+  # DISTRICT LEVEL MODEL
+  for (j in 1:n.districts) {
+    alpha[j] ~ dnorm(gamma0[country[j]] + gamma1[country[j]]*competitiveness[j], tau.alpha) # egn 7
+  }
+
+  # COUNTRY LEVEL MODEL
+  for (k in 1:n.countries) {
+    gamma0[k] <- Gamma[k,1] # assign to a vector, for sampling purposes
+    gamma1[k] <- Gamma[k,2] # assign to a vector, for sampling purposes
+    Gamma[k,1:2] ~ dmnorm(mu[k,], Tau.Gamma[,]) # eqn 8
+    mu[k,1] <- delta0[1] + delta0[2]*smdp[k] # eqn 9
+    mu[k,2] <- delta1[1] + delta1[2]*smdp[k] # eqn 10
+  }
+
+  # INDIVIDUAL LEVEL PRIORS
+  beta.age ~ dnorm(0,.001)
+  beta.male ~ dnorm(0,.001)
+  beta.edu ~ dnorm(0,.001)
+  beta.union ~ dnorm(0,.001)
+  beta.income ~ dnorm(0,.001)
+  beta.urban ~ dnorm(0,.001)
+  beta.close ~ dnorm(0,.001)
+
+  # COUNTRY LEVEL PRIORS
+  delta0 ~ dmnorm(d0, D0)
+  delta1 ~ dmnorm(d1, D1)
+  
+  # VARIANCE PRIORS
+  sigma.alpha ~ dunif(0, 100)  # prior for district-level random intercept
+  sigma.gamma0 ~ dunif(0, 100)  # prior for country-level random intercept
+  sigma.gamma1 ~ dunif(0, 100)  # prior for country-level random effect
+  rho ~ dunif(-1,1)
+
+  # VARIANCE TRANSFORMATIONS
+  tau.alpha <- pow(sigma.alpha, -2)  # convert sd to precision
+  Tau.Gamma[1:2,1:2] <- inverse(Sigma.Gamma[,])  # convert covariance matrix to precision matrix
+  Sigma.Gamma[1,1] <- pow(sigma.gamma0, 2)  # convert sd to variance
+  Sigma.Gamma[2,2] <- pow(sigma.gamma1, 2)  # convert sd to variance
+  Sigma.Gamma[1,2] <- rho*sigma.gamma0*sigma.gamma1  # calculate covariance
+  Sigma.Gamma[2,1] <- Sigma.Gamma[1,2]  # copy covariance
+
+  # QUANTITIES TO MONITOR CONVERGENCE
+  p.track <- p[1]
+}
