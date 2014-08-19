@@ -59,7 +59,7 @@ par(mfrow = c(1,2), family = "serif",
     xaxs = "i", yaxs = "i",
     mar = c(.5, 1, .5, 1), oma = c(2.5,2.5,1,1))
 plot(h.left, xlim = c(0, 1), ylim = c(0, .8),
-     axes = FALSE, border = NA, main = NA, col = "grey90")
+     axes = FALSE, border = NA, main = NA, col = "grey80")
 par(new = TRUE)
 eplot(xlim = c(0, 1), ylim = c(0, .8),
       xlab = "District Competitiveness",
@@ -70,7 +70,7 @@ lines(competitiveness0, q.pr.sims.left[3,], lwd = 1, lty = 3)
 lines(competitiveness0, q.pr.sims.left[1,], lwd = 1,lty = 3)
 
 plot(h.right, xlim = c(0, 1), ylim = c(0, .8),
-     axes = FALSE, border = NA, main = NA, col = "grey90")
+     axes = FALSE, border = NA, main = NA, col = "grey80")
 par(new = TRUE)
 aplot("PR")
 lines(competitiveness0, q.pr.sims.right[2,], lwd = 3)
@@ -140,7 +140,7 @@ par(mfrow = c(1,2), family = "serif",
     xaxs = "i", yaxs = "i",
     mar = c(.5, 1, .5, 1), oma = c(2.5,3.5,1,1))
 plot(h.left, xlim = c(0, 1), ylim = c(0, 1),
-     axes = FALSE, border = NA, main = NA, col = "grey90")
+     axes = FALSE, border = NA, main = NA, col = "grey80")
 par(new = TRUE)
 eplot(xlim = c(0, 1), ylim = c(-.1, 1.2),
       xlab = "District Competitiveness",
@@ -152,7 +152,7 @@ lines(competitiveness0, q.me.sims.left[3,], lwd = 1, lty = 3)
 lines(competitiveness0, q.me.sims.left[1,], lwd = 1,lty = 3)
 
 plot(h.right, xlim = c(0, 1), ylim = c(0, 1),
-     axes = FALSE, border = NA, main = NA, col = "grey90")
+     axes = FALSE, border = NA, main = NA, col = "grey80")
 par(new = TRUE)
 aplot("PR")
 lines(competitiveness0, q.me.sims.right[2,], lwd = 3)
@@ -209,7 +209,7 @@ for (country.index in country.indices) {
     alpha.sims <- sims[, paste("alpha[", current.district.data$District[j], "]", sep = "")]
     q.pr.sims <- quantile(plogis(alpha.sims), c(0.05, 0.5, 0.95))
     comp0 <- current.district.data$District.Competitiveness[j]
-    lines(c(comp0, comp0), q.pr.sims[c(1,3)], col = "grey90")
+    lines(c(comp0, comp0), q.pr.sims[c(1,3)], col = "grey80")
   }
   # then the points
   for (j in 1:nrow(current.district.data)) {
@@ -247,7 +247,7 @@ eplot(xlim = c(0, 9), ylim = c(0, 0.5),
       ylab = "Prior Density", ylabpos = 2,
       xat = c(0, 3, 6, 9))
 polygon(c(0, 3, 3, 0), c(0, 0, 1, 1),
-        border = NA, col = "grey90")
+        border = NA, col = "grey80")
 polygon(c(3, 10, 10, 3), c(0, 0, 1, 1),
         border = NA, col = "grey60")
 text(1.5, .5, "Reasonable Range", pos = 1)
