@@ -14,7 +14,7 @@ mis.data <- read.csv("output/mi-data.csv")
 district.data <- read.csv("output/district-data.csv")
 country.data <- read.csv("output/country-data.csv")
 
-n.chains <- 5 # Each chain starts by multiply imputing the data sets and then running the JAGS model
+n.chains <- 10 # Each chain starts by multiply imputing the data sets and then running the JAGS model
 sims.weak <- NULL  # place to hold mcmc simulations
 sims.flat <- NULL  # place to hold mcmc simulations
 sims.info <- NULL  # place to hold mcmc simulations
@@ -179,7 +179,6 @@ for (chain in 1:n.chains) {
   n.thin <- 10
   n.iter <- 15000
   n.burnin <- 5000
-  set.seed(482570)
   # Weakly informative variance priors
   m.weak <- jags(model.file = "bugs/weak.bugs",
                  data = data,

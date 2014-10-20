@@ -5,6 +5,9 @@
 # Clear workspace
 rm(list = ls())
 
+# set seed
+set.seed(12384790)
+
 # Create directory for output
 dir.create(path = "output", showWarnings = FALSE)
 dir.create(path = "doc/figs", showWarnings = FALSE)
