@@ -1,0 +1,357 @@
+%
+\documentclass[12pt]{article}
+
+% The usual packages
+\usepackage{fullpage}
+\usepackage{breakcites}
+\usepackage{setspace}
+\usepackage{endnotes}
+\usepackage{float}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{rotating}
+\usepackage{dcolumn}
+\usepackage{longtable}
+\usepackage{microtype}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage[usenames,dvipsnames]{color}
+\usepackage{url}
+\usepackage{natbib}
+\usepackage{framed}
+\usepackage{lipsum}
+\usepackage[font=small,labelfont=sc]{caption}
+\restylefloat{table}
+\bibpunct{(}{)}{;}{a}{}{,}
+
+% Set paragraph spacing the way I like
+\parskip=0pt
+\parindent=20pt
+
+% Define mathematical results
+\newtheorem{lemma}{Lemma}
+\newtheorem{proposition}{Proposition}
+\newtheorem{theorem}{Theorem}
+\newtheorem{claim}{Claim}
+\newenvironment{proof}[1][Proof]{\begin{trivlist}
+\item[\hskip \labelsep {\bfseries #1}]}{\end{trivlist}}
+\newenvironment{definition}[1][Definition]{\begin{trivlist}
+\item[\hskip \labelsep {\bfseries #1}]}{\end{trivlist}}
+\newenvironment{example}[1][Example]{\begin{trivlist}
+\item[\hskip \labelsep {\bfseries #1}]}{\end{trivlist}}
+\newenvironment{remark}[1][Remark]{\begin{trivlist}
+\item[\hskip \labelsep {\bfseries #1}]}{\end{trivlist}}
+
+% Set up fonts the way I like
+\usepackage{tgpagella}
+\usepackage[T1]{fontenc}
+\usepackage[bitstream-charter]{mathdesign}
+
+
+
+%% Set up lists the way I like
+%Redefine the first level
+\renewcommand{\theenumi}{\arabic{enumi}.}
+\renewcommand{\labelenumi}{\theenumi}
+%Redefine the second level
+\renewcommand{\theenumii}{\alph{enumii}.}
+\renewcommand{\labelenumii}{\theenumii}
+%Redefine the third level
+\renewcommand{\theenumiii}{\roman{enumiii}.}
+\renewcommand{\labelenumiii}{\theenumiii}
+%Redefine the fourth level
+\renewcommand{\theenumiv}{\Alph{enumiv}.}
+\renewcommand{\labelenumiv}{\theenumiv}
+
+% Create footnote command so that my name
+% has an asterisk rather than a one.
+\long\def\symbolfootnote[#1]#2{\begingroup%
+\def\thefootnote{\fnsymbol{footnote}}\footnote[#1]{#2}\endgroup}
+
+\hypersetup{
+ pdftitle={Appendix for Strategic Mobilization}, % title
+ pdfauthor={Carlisle Rainey}, % author
+ pdfkeywords={mobilize} {mobilization} {turnout} {proportional} {singe-member district} {PR} {SMD} {SMDP}
+ pdfnewwindow=true, % links in new window
+ colorlinks=true, % false: boxed links; true: colored links
+ linkcolor=BrickRed, % color of internal links
+ citecolor=BrickRed, % color of links to bibliography
+ filecolor=BrickRed, % color of file links
+ urlcolor=BrickRed % color of external links
+}
+
+\begin{document}
+
+\begin{center}
+{\LARGE Online Appendix: Strategic Mobilization}\\\vspace{2mm}
+{\large Why Proportional Representation Decreases Voter Mobilization}\\
+\vspace{3mm}
+Carlisle Rainey\symbolfootnote[2]{Carlisle Rainey is Assistant Professor of Political Science, University at Buffalo, SUNY, 520 Park Hall, Buffalo, NY 14260 (\href{mailto:rcrainey@buffalo.edu}{rcrainey@buffalo.edu}). I thank John Ahlquist, William Berry, Scott Clifford, Matt Golder, Sona Golder, Jens Grosser, Bob Jackson, John Barry Ryan, and Dave Siegel for their comments on previous drafts. The analyses presented here were conducted with \texttt{R} 3.1.0 and \texttt{JAGS} 3.3.0. All data and computer code necessary for replication are available at \href{https://github.com/carlislerainey/strategic-mobilization}{github.com/carlislerainey/strategic-mobilization}.}\\\singlespace
+\end{center}
+
+% Remove page number from first page
+%\thispagestyle{empty}
+
+
+\begin{appendix}
+
+%\small
+
+\tableofcontents
+
+\section{Proofs}
+
+\subsection{Proof of Lemma 1 (Equal Effort)}
+
+In order for the strategy profile $ S^* = (s_w^*, s_s^*)$ to be a Nash equilibrium, the first-order conditions, $\dfrac{\partial u_w}{\partial \epsilon_w} = 0$ and $\dfrac{\partial u_s}{\partial \epsilon_s} = 0$, and second order conditions, $\dfrac{\partial ^2u_w}{\partial ^2\epsilon_w} < 0$ and $\dfrac{\partial ^2u_s}{\partial ^2\epsilon_s} < 0$, must hold. Since the utility functions generate a discontinuous payoff space, I must also show that neither party has an incentive to defect from the proposed equilibrium to zero effort.
+
+\textbf{Remark:} The algebra below assumes that $\epsilon_i \neq 0$ in equilibrium. No Nash equilibrium exists in which any player chooses zero effort. If both players choose zero effort, then both have an incentive to defect to an arbitrarily small amount of effort to win the whole prize. If only one player chooses to play zero effort, then the other has an incentive to play as close to zero as possible. Because no positive real number closest to zero exists, no Nash equilibrium exists where one player plays zero.
+
+Given that $\epsilon_i \neq 0$ in equilibrium, Equation \ref{fo_A} gives the first order conditions for $u_w$.
+\begin{align}
+\dfrac{\partial u_w}{\partial \epsilon_w} = &\dfrac{\delta \beta^\delta \epsilon_w^{\delta-1} \epsilon_s^\delta}{[(\beta\epsilon_w)^\delta + \epsilon_s^\delta]^2} -1 = 0 \nonumber\\
+&\dfrac{\delta \beta^\delta \epsilon_w^{\delta-1} \epsilon_s^\delta}{[(\beta\epsilon_w)^\delta + \epsilon_s^\delta]^2} = 1\label{fo_A}
+\end{align}
+Equation \ref{fo_B} presents the similar first order condition for $s$.
+\begin{align}
+\dfrac{\partial u_s}{\partial \epsilon_s} = &\dfrac{\delta \beta^\delta \epsilon_w^{\delta} \epsilon_s^{\delta - 1}}{[(\beta\epsilon_w)^\delta + \epsilon_s^\delta]^2} -1 = 0 \nonumber\\
+&\dfrac{\delta \beta^\delta \epsilon_w^{\delta} \epsilon_s^{\delta - 1}}{[(\beta\epsilon_w)^\delta + \epsilon_s^\delta]^2} = 1\label{fo_B}
+\end{align}
+Since both the left hand side of Equation \ref{fo_A} and \ref{fo_B} equal one, setting one equal to the other shows that the first-order conditions hold if and only if the parties exert equal effort.
+\begin{align}
+\dfrac{\delta \beta^\delta \epsilon_w^{\delta-1} \epsilon_s^\delta}{[(\beta\epsilon_w)^{\delta} + \epsilon_s^\delta]^2} &= 
+\dfrac{\delta \beta^\delta \epsilon_w^{\delta} \epsilon_s^{\delta - 1}}{[(\beta\epsilon_w)^\delta + \epsilon_s^\delta]^2}\nonumber\\
+\epsilon_w &= \epsilon_s\nonumber
+\end{align}
+Given that parties must exert equal effort in any pure strategy Nash equilibrium, the second order conditions  confirm that such a strategy maximizes (rather than minimizes) the local utility. Equation \ref{eq:soc_w} gives the second-order condition for $u_w$.
+\begin{align}
+\label{eq:soc_w} \dfrac{\partial ^2u_w}{\partial ^2\epsilon_w} = &\dfrac{\delta (\delta - 1) \beta \epsilon_w^{\delta-2} \epsilon_s^{\delta}}{(\beta\epsilon_w^\delta + \epsilon_s^\delta)^2} -\dfrac{2\delta^2 \beta \epsilon_w^{2\delta - 2} \epsilon_s^{\delta}}{(\beta\epsilon_w^\delta + \epsilon_s^\delta)^3} < 0
+ \end{align}
+After applying Lemma 1 and noting that $\delta$ and $\beta$ are restricted to positive values, algebraic simplification shows that Equation \ref{eq:soc_w} holds if and only if $\beta > \left (\dfrac{\delta - 1}{\delta + 1} \right ) ^{\dfrac{1}{\delta}}$. Next, I show that the second-order condition holds for $s$.
+\begin{align}
+\label{eq:soc_s} \dfrac{\partial ^2u_s}{\partial ^2\epsilon_s} = &\dfrac{\delta (\delta - 1) \beta^\delta \epsilon_w^{\delta} \epsilon_s^{\delta-2}}{[(\beta\epsilon_w^\delta) + \epsilon_s^\delta]^2} -\dfrac{2\delta^2 \beta^{2\delta} \epsilon_w^{\delta} \epsilon_s^{2\delta-2}}{[(\beta\epsilon_w)^\delta + \epsilon_s^\delta]^3} < 0
+\end{align}
+After again applying Lemma 1 and noting that $\delta$ and $\beta$ are restricted to positive values, algebraic simplification shows that Equation \ref{eq:soc_s} holds if and only if $\beta > \left (\dfrac{\delta - 1}{3 - \delta} \right ) ^{\dfrac{1}{\delta}}$.
+
+\subsection*{Proof of Lemma 2 (Equilibrium Strategy)}
+
+Given Lemma 1 (Equal Effort), Equation \ref{fo_A} or \ref{fo_B} reduces to $\dfrac{\delta\beta^\delta\epsilon^{2\delta-1}}{(\beta^\delta + 1)^2\epsilon^{2\delta}} = 1$. Algebraic manipulation gives the equilibrium strategy, $s^*(\delta, \beta) = \epsilon = \delta\dfrac{\beta^\delta}{(1+ \beta^\delta)^2}$. But since the utility functions produce a discontinuous payoff space, I must also show that neither party as an incentive to defect from the proposed equilibrium to the boundary of zero effort. First, note by Lemma 1 that $u_w < u_s$ for all $\beta \in (0, 1)$ and $\delta >  1$. Therefore, if $w$ has no incentive to change from the proposed equilibrium, then neither does $s$. To see when $w$ has an incentive to change from the proposed equilibrium to zero effort, simply plug the proposed equilibrium effort into the utility function for $w$ and set the payoff function greater than or equal to zero. This shows that neither party has an incentive to switch to zero for $\beta \geq (\delta - 1)^{\dfrac{1}{\delta}}$. Any set of parameter values which satisfy this condition also satisfy the second order conditions. Therefore, the equilibrium exists if and only if neither party has an incentive to change from the proposed equilibrium strategy to zero effort.
+
+\subsection*{Proof of Proposition 1 (Competitiveness)}
+
+Given the equilibrium strategy of $s^*(\delta, \beta) = \epsilon = \delta\dfrac{\beta^\delta}{(\beta^\delta + 1)^2}$, I simply take the derivative of the equilibrium strategy function, $s^*$, with respect to the competitiveness parameter, $\beta$, to find how equilibrium mobilization efforts change as competitiveness changes.
+\begin{equation}
+\dfrac{\partial s^*}{\partial \beta} = \dfrac{\delta^2\beta^{\delta - 1}}{(\beta^\delta + 1)^2} - \dfrac{2\delta^2\beta^{2\delta - 1}}{(\beta^\delta + 1)^3}
+\end{equation}
+Algebraic manipulation yields $\dfrac{\partial s^*}{\partial \beta} = \dfrac{\delta^2\beta^{\delta - 1}(1 - \beta^\delta)}{(\beta^\delta + 1)^3}$. Since $\delta$ is defined to be greater than one and $\beta$ is defined to be between zero and one, this derivative is clearly positive. Thus, equilibrium effort is increasing in competitiveness.
+
+\subsection{Proof of Proposition 2 (Disproportionality)}
+
+Given the equilibrium strategy of $s^*(\delta, \beta) = \epsilon = \delta\dfrac{\beta^\delta}{(\beta^\delta + 1)^2}$, I simply take the derivative of the equilibrium strategy function, $s^*$, with respect to the disproportionality parameter, $\delta$, to find how equilibrium mobilization efforts change as disproportionality changes. This derivative is more complicated, but differentiation shows that $\dfrac{\partial s^*}{\partial \delta} = \dfrac{\beta^\delta + \delta\beta^\delta \text{ln}(\beta)}{(\beta^\delta + 1)^2} - \dfrac{2\beta^{2\delta}\text{ln}(\beta)}{(\beta^\delta + 1)^3}$. Algebraic manipulation shows that this derivative is positive if and only if $\delta\text{ln}{\beta} > \dfrac{\beta^\delta + 1}{\beta^\delta - 1}$. This derivative is positive for much of the parameter space for which the proposed equilibrium exists and only negative when both $\beta$ and $\delta$ are extremely small.
+
+\subsection{Proof of Proposition 3 (Marginal Effect of Competitiveness)}
+
+Given the equilibrium strategy of $s^*(\delta, \beta) = \epsilon = \delta\dfrac{\beta^\delta}{(\beta^\delta + 1)^2}$, I simply take the second derivative of the equilibrium strategy function, $s^*$, first differentiating with respect to the competitiveness parameter, $\beta$, and then with respect to the disproportionality parameter, $\delta$, to find how the marginal effect of competitiveness on equilibrium effort changes as disproportionality varies. This differentiation is complicated, but algebraic manipulation after setting it greater than zero yields the condition $\dfrac{1}{3} < \beta^\delta(1 + \beta^\delta)$. This inequality holds for almost all of the parameter space for which the pure strategy equilibrium exists.
+
+\section{Extensions of the Formal Model}
+
+\subsection{Expanding the Two-Party Model to the $n$-Party Case}
+
+I briefly examine a less general model of party competition,but one that allows the value of the seat (or seats) in the contest to vary and allows more than two political parties. Making somehwat restrictive, but reasonable assumptions, I show that the key results from the two party model do not depend on the value of the prize (the number of seats competed over) or the number of parties in the competition. In this more complicated model, I assume that $n$ parties, where $P = \{1, 2,..., n\}$, compete over a seat or set of seats with value normalized to one. Each party places the same value on the seat (or set of seats). Again, I assume for simplicity that the prize is infinitely divisible. Similar to the simpler two-party model, I assume that the first $k$ parties are unable to mobilize voters as efficiently as the last $n - k$ parties. This gives two types of parties, $j \in \{w, s\}$, with the weak type, $w$, only able to mobilize a fraction of the voters that the strong type, $s$, is able to mobilize with the same amount of effort. Assuming risk neutrality gives the utility functions for each type.
+\begin{align}
+u_w(\epsilon_w, \epsilon_s) &= \dfrac{(\beta \epsilon_w)^\delta}{k(\beta \epsilon_w)^\delta + (n-k)\epsilon_s^\delta} - \epsilon_w \\
+u_s(\epsilon_w, \epsilon_s) &= \dfrac{\epsilon_s^\delta}{k(\beta \epsilon_w)^\delta + (n-k)\epsilon_s^\delta} - \epsilon_s
+\end{align}
+\begin{definition}
+\textbf{(Total Effort)} Define total effort, $\tau_\epsilon$, as the sum of the effort exerted by each party competing in the contest. Formally, $\tau_\epsilon = \sum_{i = 1}^n \epsilon_i$, for $i = \{1, 2,..., n\}$. 
+\end{definition}
+Notice that for the special case of two parties discussed above, the total effort exerted by the political parties is simply two times the equilibrium effort given the competitiveness and disproportionality of the contest. Formally, by Lemmas 1 and 2, $\tau_\epsilon(\delta, \beta) = 2\delta\dfrac{\beta^\delta}{(\beta^\delta + 1)^2}$ for the special case of a contest between only two political parties. I now use this definition to briefly expand beyond the simple model laid out above and explore the effects of multiple parties and varying district magnitude on the equilibrium effort.
+\begin{lemma}
+\textbf{(n-party Case)} The total effort, $\tau_\epsilon$, exerted in any contest does not depend on the number of parties in the contest. The number of parties in the contest only influences the amount of effort exerted by each individual party.
+\end{lemma}
+Proving Lemma 3 requires first finding a strategy profile for each type, $w$ and $s$ that satisfies the first and second order conditions of their respective utility functions. Second, it requires showing the the total effort, $\tau_\epsilon$, as defined in Definition 1 does not change as the number of parties in the contest varies. While the equilibrium effort may depend on the ratio of types (i.e. $\dfrac{k}{(n-k)}$), which is an aspect of competitiveness, it may not depend on the total number of parties in the contest (i.e. increasing the number of parties while leaving the ratio of type the same).
+
+I begin by examining the first-order condition for the weak type's utility function. The utility function of the weak type is given by $u_w(\epsilon_w, \epsilon_s) = \dfrac{(\beta \epsilon_w)^\delta}{k(\beta \epsilon_w)^\delta + (n-k)\epsilon_s^\delta} - \epsilon_w$. Taking the derivative with respect to $\epsilon_w$, setting it equal to zero, and rearranging yields the first order condition for the weak type.
+\begin{align}
+\dfrac{(n-k)\delta\beta^\delta\epsilon_w^{\delta-1}\epsilon_s^\delta}{[k(\beta\epsilon_w)^\delta + (n-k)\epsilon_s^\delta]^2} = 1\label{fo_W}
+\end{align}
+
+I now examine the first-order conditions for the strong type's utility function. The utility function is given by $u_s(\epsilon_w, \epsilon_s) = \dfrac{\epsilon_s^\delta}{k(\beta \epsilon_w)^\delta + (n-k)\epsilon_s^\delta} - \epsilon_s$. Taking the derivative with respect to $\epsilon_s$, setting it equal to zero, and rearranging yields the first order condition for the strong type.
+\begin{align}
+\dfrac{k\delta\beta^\delta\epsilon_w^{\delta}\epsilon_s^{\delta-1}}{[k(\beta\epsilon_w)^\delta + (n-k)\epsilon_s^\delta]^2} = 1\label{fo_S}
+\end{align}
+Setting the left hand sides of Equations \ref{fo_W} and \ref{fo_S} equal to each other and algebraic manipulating the result shows that in equilibrium the strategies of the weak and strong types are not always equal, but have the relationship $\dfrac{k}{n-k}\epsilon_w = \epsilon_s$. 
+
+Replacing $\epsilon_s$ in Equation \ref{fo_W} with $\dfrac{k}{n-k}\epsilon_w$ or replacing $\epsilon_w$ in Equation \ref{fo_S} with $\dfrac{n-k}{k}\epsilon_s$ and algebraically manipulating gives the identical equilibrium strategies for each type, $s^*_w$ and $s^*_s$.
+\begin{align}
+s^*_w(n, k, \delta, \beta) &= \dfrac{k\delta\beta^\delta(\dfrac{k}{n-k})^\delta}{[k\beta^\delta + (n-k)(\dfrac{k}{n-k})^\delta]^2} \\
+s^*_s(n, k, \delta, \beta) &= \dfrac{k\delta\beta^\delta(\dfrac{k}{n-k})^{\delta+1}}{[k\beta^\delta + (n-k)(\dfrac{k}{n-k})^\delta]^2}
+\end{align}
+The above result gives the equilibrium effort for each individual party in the contest, depending on that party's type. All that remains is to show that these equilibrium strategies imply that the total effort, $\tau_\epsilon$ does not vary with the number of parties. By the definition of total effort given in Definition 1, the total effort in the n-party contest is given by $\tau_\epsilon = k \times \dfrac{k\delta\beta^\delta(\dfrac{k}{n-k})^\delta}{[k\beta^\delta + (n-k)(\dfrac{k}{n-k})^\delta]^2} + (n - k) \times \dfrac{k\delta\beta^\delta(\dfrac{k}{n-k})^{\delta+1}}{[k\beta^\delta + (n-k)(\dfrac{k}{n-k})^\delta]^2}$. Through algebraic manipulation, this reduces to $\tau_\epsilon = 2\delta\beta^\delta\dfrac{(\dfrac{k}{n-k})^{\delta - 1}}{[\beta^\delta + (\dfrac{k}{n-k})^{\delta-1}]^2}$. Clearly, the total effort does not depend on the number of parties, only on the ratio of weak and strong types.
+
+\subsection{Expanding the Model to Allow for Prizes with Variable Value}\label{app:variable-prize}
+
+I now consider the consequences of changing the value of the prize over which the parties are competing. Again, I make restrictive but reasonable assumptions and show that the results from the simpler two-party model do not change. There are two methods of increasing the magnitudes of districts in electoral systems. First, policy-makers might lump districts together. This increases the district magnitude, but also makes the district larger, increasing the geographical size of the district and the population. This change makes mobilization more costly. I assume that doubling the size of the district doubles the cost of mobilization, that tripling the size of the district triples the cost of mobilization, and so on. Another method to increase district magnitude is to increase the size of the legislature. This seems to have little or no influence on the cost of mobilization, since the geographic size and population of the district remain the same. However, increasing the size of the legislature reduces the value of each seat. It is reasonable to assume that doubling the size of the legislature reduces the value of each seat by one-half, tripling the size of the legislature reduces the value of each seat by one-third, and so on. Either of these changes is captured by the assumption that the cost of effort is a function, $c$, of district magnitude, $m$, where $c(m, \epsilon)i) = m\epsilon_i$.
+\begin{lemma}
+\textbf{(Size of the Prize)} Assuming that the cost of effort is a function, $c$, of district magnitude, $m$, where $c(m, \epsilon_i) = m\epsilon_i$, the number of seats awarded in any contest does not influence the total effort exerted by the parties, $\tau_\epsilon$.
+\end{lemma}
+Changing the value of the seat or seats that parties compete over to $v$ rather than normalizing to one has no effect on the equilibrium efforts as long as reasonable adjustments are applied to the cost. As I argue in the main text, increasing the size of the district should increase the cost of mobilization. Assuming that a competition over a seat or seats $v$ times as valuable is $v$ times as costly, the equilibrium effort levels do not change. It is straightforward to see this in the general model or two-party. I show this for the strategy of the weak type, and the proof for the strong type is almost identical.  
+
+The utility function of the weak type with variable values and associated changes in costs is given by $u_w(\epsilon_w, \epsilon_s) = v\dfrac{(\beta \epsilon_w)^\delta}{k(\beta \epsilon_w)^\delta + (n-k)\epsilon_s^\delta} - v\epsilon_w$. Taking the derivative with respect to $\epsilon_w$, setting it equal to zero, and rearranging yields the first order condition for the weak type.
+\begin{equation}
+v\dfrac{(n-k)\delta\beta^\delta \epsilon_w^{\delta-1}\epsilon_s^\delta}{[k(\beta\epsilon_w)^\delta + (n-k)\epsilon_s^\delta]^2} = v
+\end{equation}
+It is easy to see that the $v$'s on the left and right sides cancel, yielding a first-order condition that does not depend on $v$ and exactly the same first-order condition as the model without variable values.
+
+\section{Robustness of Empirical Results}
+
+In the first section of this appendix, I expand on the comments I make about the robustness of the empirical results in Footnote \ref{fn:robust} of the main text. I first show that the conclusions do not depend on whether I control for the number of political parties. Next, I show that the results are robust to complete pooling (single logit on the entire data set). Finally, I show that the results are robust to no pooling across countries (separate logits in each country). For computational ease, I (1) use listwise deletion for all the robustness checks, (2) assume that the random effects in the hierarchical models are independent, and (3) place Gamma(2, 0.01) priors on the standard deviation parameters of the hierarchical models (see \citealt{Chungetal2013}). Inferences do not depend on multiple imputation. Relaxing independence does not change any conclusions (and the estimated correlation in the main text is near zero). Placing priors on the standard deviation parameter gently pushes these parameters away from zero in a couple of instances. All explanatory variables in this section are scaled to have a minimum of zero and a maximum of one, with the exception of competitiveness, which has a theoretical range from zero to one but actually varies from 0.24 to 0.93. This scaling dramatically speeds the convergence of the MLE estimation.
+
+\clearpage
+\subsection{Controlling for Number of Political Parties Does Not Affect the Results}
+
+One potential confound that I do not include in the main model is the number of political parties. Prior work shows that proportional electoral rules lead to more political parties, so it might be important to take this factor into account. Table \ref{tab:enep_partial} presents a series of hierarchical models that show the results do not change when I  include the effective number of political parties (at the district level) in the model or by including its interaction with electoral rules. The results are remarkably consistent across the different specifications.
+
+Notice first that, as I expect, district competitiveness has a positive effect in SMDP systems (shown by the large, positive coefficient for competitiveness) and PR rules eliminate most of this positive effect (shown the large, negative coefficient for the product of competitiveness and PR rules). These findings hold regardless of the model specification. Next, notice that whether I include or exclude individual-level covariates in the hierarchical  models, the the model specification that I rely on in the main text (excluding the number of parties) minimizes the BIC, a criterion commonly used to choose model specifications. However, Table \ref{tab:F_partial} shows that the effect of the number of parties marginally statistically significant when individual-level controls are excluded from the model. But because the BIC points toward the model excluding the number of political parties, I present that model in the main text. However, the conclusions do not depend on this choice.
+
+\input{tabs/enep_partial.tex}
+
+ 
+ \begin{table}[h!]
+ \begin{center}
+ \begin{tabular}{c c c}
+ Comparison & $F$-test & Direction \\
+ Model 1 to Model 2 & $p = 0.09$ & + \\
+ Model 1 to Model 3 & $p = 0.12$ & + \\
+ Model 4 to Model 5 & $p = 1.00$ & 0 \\
+ Model 4 to Model 6 & $p = 0.68$ & +/-- \\
+ \end{tabular} \caption{This table compares models that include and exclude ENEP. The Comparison column reports which two models from Table \ref{tab:enep_partial} are being compared. The $F$-test column reports the $p$-value that that larger model (including ENEP) fits the data statistically significantly better than than the smaller model (excluding ENEP). The Direction column reports the direction of the estimated effect of ENEP.}\label{tab:F_partial}
+ \end{center}
+ \end{table}
+ 
+\clearpage
+\subsection{Estimating a Model with Complete Pooling Does Not Affect Results}
+
+Table \ref{tab:enep_complete} presents estimates using a non-hierarchical logit model that completely pools the data across countries and districts. These results show that the conclusions in the main text and the conclusions about the limited impact of the number of parties on these results are robust to a complete pooling estimation strategy. Notice that across all model specifications, competitiveness has a large, positive effect in SMDP systems (shown by the coefficient for competitiveness) while PR rules consistently undermine this effect (shown by the large, negative coefficient for the product of competitiveness and PR rules).
+
+By design, the empirical model I present in the main text partially pools information across districts. Because districts in Canada and Great Britain have fewer respondents and thus less information per district, there is more partial pooling in these districts. One might wonder whether this has an unintended effect on the results. However, the results from Table \ref{tab:enep_complete} using complete pooling closely mirror those from Table \ref{tab:enep_partial} using partial pooling. The substantive conclusions do not change.
+
+However, Table \ref{tab:F_complete} shows that all specifications in Table \ref{tab:enep_complete} that include the number of political parties  fit the data statistically significantly better than models excluding the number of political parties. However, notice that signs of the estimated effects depend on whether I include individual-level covariates. Also again notice that the model specification that I rely on in the main text minimizes the BIC.
+
+\input{tabs/enep_complete.tex}
+
+
+ \begin{table}[h!]
+ \begin{center}
+ \begin{tabular}{c c c}
+ Comparison & $F$-test & Direction \\
+ Model 7 to Model 8 & $p = 0.01$ & + \\
+ Model 7 to Model 9 & $p = 0.05$ & + \\
+ Model 10 to Model 11 & $p = 0.01$ & -- \\
+ Model 10 to Model 12 & $p = 0.04$ & -- \\
+ \end{tabular} \caption{This table compares models that include and exclude ENEP. The Comparison column reports which two models from Table \ref{tab:enep_partial} are being compared. The $F$-test column reports the $p$-value that that larger model (including ENEP) fits the data statistically significantly better than than the smaller model (excluding ENEP). The Direction column reports the direction of the estimated effect of ENEP.}\label{tab:F_complete}
+ \end{center}
+ \end{table}
+
+\clearpage
+\subsection{Estimating a Model with No Pooling Across Countries Does Not Affect the Results}
+ 
+The model I present in the main text assumes complete pooling across districts and elections. In this section, I also show that the results are robust to a no pooling assumption by estimating separate logistic regressions for each election in the data. This approach uses complete pooling across districts and no pooling across elections. The results are consistent with the main model (i.e. notice that competitiveness has a much larger effect in Canada and Great Britain). Table \ref{tab:CbyC_componly} presents results without individual-level controls, while Table \ref{tab:CbyC_full} includes them.
+
+
+\input{tabs/CbyC_componly.tex}
+
+\input{tabs/CbyC_full.tex}
+
+I also replicate Figure \ref{fig:CbyC} from the main text using separate models in each country (i.e. the estimates presented in Table \ref{tab:CbyC_full}). Figure \ref{fig:CbyC_sep} shows these results.
+
+\begin{figure}[h!]
+\centering
+\includegraphics[scale = .7]{figs/CbyC_sep.pdf}
+\caption{This figure replicates Figure \ref{fig:CbyC} in the main text using separate logistic regression models in each election. That is, it exhibits no pooling across elections and complete pooling across districts. The results are very similar to Figure \ref{fig:CbyC} in the main text and the substantive conclusions are the same.}\label{fig:CbyC_sep}
+\end{figure}
+
+\clearpage
+
+\section{Variance Priors}
+
+The data I use to estimate the model parameters contain sufficient information to estimate all parameters reasonably well with the exception of the covariance matrix for the election-level effects. In this situation, the choice of prior can impact the results and one must choose a reasonable prior. A default, ``uninformative'' prior uniformly distributed from 0 to 100 yields results substantively similar to the results I discuss in the main text, but overestimates the variance parameters (\citealt{Gelman2006a}).
+
+To alleviate concerns of overestimating variance parameters, I construct a weakly informative prior distribution for the diagonal entries of the covariance matrix for the election-level effects. The goal is to place a weakly-informative prior on the variance parameters (election-level variances, in this case) that contains much less prior information than is actually available, allowing the likelihood to drive the inferences. To do this, I use a half-Cauchy(5) distribution to model the standard deviations. Figure \ref{priors} shows that the half-Cauchy(5) is nearly uniform for reasonable values of the standard deviation, which for my purposes is roughly the interval [0,3]. Given the scale of the variables, it would be very strange if the true coefficients (conditional on electoral rules) across elections had a standard deviation of greater than three. One would probably expect a standard deviation of less than one. If the standard deviation were three, and the mean, for example, 2, then roughly half of the elections would have logit coefficients larger than four or less than zero. Given the scaling of the variables of interest, this is not a realistic scenario.
+
+Another important property of the half-Cauchy(5) prior is that it goes to zero very slowly compared to the half-normal prior. So while it is roughly uniform from zero to three, it is quite flat out to ten. This property rules out very large standard deviations, such as 30, while allowing the likelihood to drive the estimates. Compare the half-Cauchy(5) prior to the uniform(0,100) and the half-normal(2). Notice that the uniform prior places an unrealistic, flat prior on the standard deviation, suggesting that large values near 50 are just as likely as small values near one. \cite{Gelman2006a} notes that the uniform(0,100) prior is problematic because it leads to an overestimation of the variance parameters, especially when the number of groups is small. The half-normal(2) prior, on the other hand, acts as a highly informative prior, ruling out large standard deviations and placing much higher prior weight on parameter values less than three. Although I use the half-Cauchy(5) prior in the main analysis, the results are substantively similar for both the uniform and the half-normal prior. 
+
+\begin{figure}[h!]
+\centering
+\includegraphics[scale = .7]{figs/variance_priors.pdf}
+\caption{This figure shows that the half-Cauchy(5) prior is a reasonable, weakly informative prior. It is roughly flat for reasonable standard deviations and somewhat flat for larger, but unrealistic values. \cite{Gelman2006a} points out that this prior structure will yield less upwardly biased estimates of standard deviation parameters. Compare the half-Cauchy(5) to the uniform(0,100), which places substantial prior weight on truly unrealistic standard deviations above ten, and the half-normal(2) prior, which places a much higher prior probability on parameter values less than three.}\label{priors}
+\end{figure}
+
+To illustrate that the weakly informative half-Cauchy prior is not driving the inferences, Figure \ref{postvar} shows the MCMC samples of the standard deviation parameter in the models using half-Cauchy(5), uniform(0,100), and half-normal(2) priors. In each case, plotting the prior is not useful because it appears as a barely visible flat line across the bottom of the histogram, suggesting the the likelihood is overwhelming the prior, as intended. However, notice that the posteriors based on the weakly informative half-Cauchy priors and the informative half-normal priors are more peaked and focused in a realistic region of the parameter space than the posteriors based on the uniform priors.
+
+\begin{figure}[h!]
+\centering
+\includegraphics[scale = .7]{figs/variance_posteriors.pdf}
+\caption{This figure shows that the half-Cauchy(5) prior does not overwhelm the likelihood. If the prior density were plotted, it would be a barely visible, flat line across the bottom of the plot. Further, all the posteriors are concentrated well below one, while both the half-Cauchy and uniform priors place a substantial prior probability above one.}\label{postvar}
+\end{figure}
+
+\clearpage
+\section{Case Selection}
+
+Table \ref{exclusion} lists each country in Module 2 of the CSES and explains if and why I exclude it from the sample.
+
+\begin{table}[H]
+{\scriptsize \begin{tabular}{ll}
+\textbf{Country} & \textbf{Reason Excluded}\\
+Albania & second-tier adjustments\\
+Australia & concurrent upper house election \\
+Belgium & concurrent upper house election\\
+Brazil & concurrent presidential election, concurrent upper house election\\
+Bulgaria & overlapping single and multimember districts \\
+&(though not strictly a second-tier correction)\\
+Canada & Included\\
+Chile & concurrent presidential election, concurrent upper house election\\
+Czech Republic & second-tier adjustment\\
+Denmark & second-tier adjustment\\
+Finland & Included\\
+France & concurrent presidential election\\
+Germany & second-tier adjustment\\
+Great Britain & Included\\
+Hong Kong & overlapping geographic and functional constituencies\\
+Hungary & second-tier adjustment\\
+Iceland & second-tier adjustment\\
+Ireland & Droop Quota\\
+Israel & single national district\\
+Italy & concurrent upper house election\\
+Japan & concurrent upper house election\\
+Korea & second-tier correction\\
+Kyrgyzstan & concurrent presidential election\\
+Mexico & second-tier adjustment\\
+Netherlands & single national district\\
+New Zealand&second-tier adjustment\\
+Norway&second-tier adjustment\\
+Peru&concurrent presidential election\\
+Philippines&concurrent presidential election\\
+Poland&concurrent upper house election\\
+Portugal&Included\\
+Romania&concurrent presidential election, concurrent upper house election, \\
+&  second-tier adjustment\\
+Russia&concurrent presidential election\\
+Slovenia&data unavailability\\
+Spain&concurrent upper house elections\\
+Sweden&second-tier adjustment\\
+Switzerland&concurrent upper house elections\\
+Taiwan&concurrent presidential election, second-tier adjustment\\
+United States&concurrent presidential election, concurrent upper house election
+\end{tabular}\caption{A table listing the countries in Module 2 of the CSES and explaining why each country was excluded.}\label{exclusion}}
+\end{table}
+\end{appendix}
+
+\singlespace 
+\normalsize
+\singlespace
+\bibliographystyle{apsr_fs}
+\bibliography{bibliography}
+\end{document}
+
